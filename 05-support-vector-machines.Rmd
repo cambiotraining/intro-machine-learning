@@ -255,7 +255,7 @@ plot(svmTune, metric = "ROC", scales = list(x = list(log =2)))
 Predictions on test set.
 ```{r echo=T}
 svmPred <- predict(svmTune, moonsTest[,c(1:2)])
-confusionMatrix(svmPred, as.factor(moonsTest[,3]))
+confusionMatrix(svmPred, moonsTest[,3])
 ```
 
 Get predicted class probabilities so we can build ROC curve.
@@ -336,6 +336,51 @@ ggplot(xgrid, aes(V1,V2)) +
         axis.title=element_text(size=20,face="bold"))
 ```
 
+**Iris example**
+
+splitting the data into training set and test set
+```{r echo=T}
+library(e1071)
+library(caTools)
+my.split = sample.split(iris$Species, SplitRatio = .8)
+training_set = subset(iris, my.split == TRUE)
+test_set = subset(iris, my.split == FALSE)
+nrow(training_set)
+```
+
+```{r echo=T}
+training_set[,1:4] = scale(training_set[,1:4])
+test_set[,1:4] = scale(test_set[,1:4])
+classifier1 = svm(formula = Species~., data = training_set, type = 'C-classification', kernel = 'radial')
+classifier2 = svm(formula = Species~ Petal.Width + Petal.Length, data = training_set, type = 'C-classification', kernel = 'radial')
+```
+
+
+```{r echo=T}
+test_pred1 = predict(classifier1, type = 'response', newdata = test_set[-5])
+test_pred2 = predict(classifier2, type = 'response', newdata = test_set[-5])
+# Making Confusion Matrix
+cm1 = table(test_set[,5], test_pred1)
+cm2 = table(test_set[,5], test_pred2)
+cm1 # Confusion Matrix for all parameters
+cm2 # Confusion Matrix for parameters being Petal Length and Petal Width
+```
+
+The accuracy for both model looks solid. Also notice that as we had deduced, only Petal Length and Width is important to make this model accurate and our second classifier proves it!
+
+```{r svm.plots}
+m2 <- svm(Species~., data = iris)
+plot(m2, iris, Petal.Width ~ Petal.Length,
+      slice = list(Sepal.Width = 3, Sepal.Length = 4))
+```
+
+```{r svm.subsets}
+iris.part = subset(iris, Species != 'setosa')
+iris.part$Species = factor(iris.part$Species)
+#iris.part = iris.part[, c(1,2,5)]
+svm.fit = svm(formula=Species~., data=iris.part, type='C-classification', kernel='linear')
+plot(svm.fit, iris.part, Petal.Width ~ Petal.Length, slice = list(Sepal.Width = 3, Sepal.Length = 4))
+```
 
 ## Example - regression
 This example serves to demonstrate the use of SVMs in regression, but perhaps more importantly, it highlights the power and flexibility of the [caret](http://cran.r-project.org/web/packages/caret/index.html) package. Earlier we used _k_-NN for a regression analysis of the **BloodBrain** dataset (see section \@ref(knn-regression)). We will repeat the regression analysis, but this time we will fit a radial kernel SVM. Remarkably, a re-run of this analysis using a completely different type of model, requires changes to only two lines of code.
