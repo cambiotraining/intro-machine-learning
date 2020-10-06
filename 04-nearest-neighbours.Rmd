@@ -6,6 +6,7 @@ editor_options:
 # Nearest neighbours {#nearest-neighbours}
 
 <!-- Matt -->
+<!-- edited by Irina Mohorianu iim22@cam.ac.uk-->
 
 ## Introduction
 _k_-NN is by far the simplest method of supervised learning we will cover in this course. It is a non-parametric method that can be used for both classification (predicting class membership) and regression (estimating continuous variables). _k_-NN is categorized as instance based (memory based) learning, because all computation is deferred until classification. The most computationally demanding aspects of _k_-NN are finding neighbours and storing the entire learning set.
@@ -19,18 +20,19 @@ A simple _k_-NN classification rule (figure \@ref(fig:knnClassification)) would 
 knitr::include_graphics("images/knn_classification.svg")
 ```
 
-A basic implementation of _k_-NN regression would calculate the average of the numerical outcome of the _k_ nearest neighbours. 
+A basic implementation of _k_-NN regression would calculate a summary (e.g. a distance, a voting summary) of the numerical outcome of the _k_ nearest neighbours. 
 
-The number of neighbours _k_ can have a considerable impact on the predictive performance of _k_-NN in both classification and regression. The optimal value of _k_ should be chosen using cross-validation.
+The number of neighbours _k_ has an impact on the predictive performance of _k_-NN in both classification and regression. The optimal value of _k_ (_k_ is considered a hyperparameter) should be chosen using cross-validation.
 
-Euclidean distance is the most widely used distance metric in _k_-nn, and will be used in the examples and exercises in this chapter. However, other distance metrics can be used.
+**How do we define and determine the similarity between observations?**
+We use distance (or dissimilarity) metrics to compute the pairwise differences between observations. The most common distances are the Euclidean and Manhattan metrics; 
+
+Euclidean distance measures the straight-line distance between two samples (i.e., how the crow flies); it is the most widely used distance metric in _k_-nn, and will be used in the examples and exercises in this chapter. Manhattan measures the point-to-point travel time (i.e., city block) and is commonly used for binary predictors (e.g., one-hot encoded 0/1 indicator variables). 
 
 **Euclidean distance:**
 \begin{equation}
   distance\left(p,q\right)=\sqrt{\sum_{i=1}^{n} (p_i-q_i)^2}
-  (\#eq:euclidean)
 \end{equation}
-
 
 ```{r euclideanDistanceDiagram, fig.cap='Euclidean distance.', out.width='75%', fig.asp=0.9, fig.align='center', echo=F}
 par(mai=c(0.8,0.8,0.1,0.1))
@@ -43,6 +45,21 @@ text(4.5,4, expression(paste('q(x'[2],'y'[2],')')), cex=1.7)
 text(2.5,0.5, expression(paste('dist(p,q)'==sqrt((x[2]-x[1])^2 + (y[2]-y[1])^2))), cex=1.7)
 ```
 
+**Manhattan distance:**
+\begin{equation}
+  distance\left(p,q\right)={\sum_{i=1}^{n} |p_i-q_i|}
+\end{equation}
+
+There are other metrics to measure the distance between observations. For example, the Minkowski distance is a generalization of the Euclidean and Manhattan distances and is defined as
+
+**Minkowski distance:**
+\begin{equation}
+  distance\left(p,q\right)=\sqrt[p]{\sum_{i=1}^{n} (p_i-q_i)^p}
+
+\end{equation}
+
+
+where  p>0 (Han, Pei, and Kamber 2011). When p=2 the Minkowski distance is the Euclidean distance and when  q=1 it is  the Manhattan distance
 
 ## Classification: simulated data
 
@@ -354,6 +371,95 @@ ggplot(xgrid, aes(V1,V2)) +
   theme_bw() +
   theme(plot.title = element_text(size=25, face="bold"), axis.text=element_text(size=15),
         axis.title=element_text(size=20,face="bold"))
+```
+
+## Example on the Iris dataset
+From the iris manual page:
+
+The famous (Fisher’s or Anderson’s) Iris data set, first presented by Fisher in 1936 (http://archive.ics.uci.edu/ml/datasets/Iris), gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. The species are Iris setosa, versicolor, and virginica. One class is linearly separable from the other two; the latter are not linearly separable from each other.
+The data base contains the following attributes:
+1). sepal length in cm
+2). sepal width in cm
+3). petal length in cm
+4). petal width in cm
+5). classes:
+- Iris Setosa
+- Iris Versicolour
+- Iris Virginica
+
+```{r echo=T}
+library(datasets)
+library(gridExtra)
+library(GGally)
+data(iris)      ##loads the dataset, which can be accessed under the variable name iris
+summary(iris)   ##presents the 5 figure summary of the dataset
+str(iris)       ##presents the structure of the iris dataframe
+```
+
+Explore the data: visualize the numerical values using the violin plots. 
+They are similar to the Box Plots but they allow the illustration of the number of points at a particular value by the width of the shapes. We can also include the marker for the median and a box for the interquartile range.
+
+```{r echo=T}
+VpSl <-  ggplot(iris, aes(Species, Sepal.Length, fill=Species)) + 
+        geom_violin(aes(color = Species), trim = T)+
+        scale_y_continuous("Sepal Length", breaks= seq(0,30, by=.5))+
+        geom_boxplot(width=0.1)+
+        theme(legend.position="none")
+VpSw <-  ggplot(iris, aes(Species, Sepal.Width, fill=Species)) + 
+        geom_violin(aes(color = Species), trim = T)+
+        scale_y_continuous("Sepal Width", breaks= seq(0,30, by=.5))+
+        geom_boxplot(width=0.1)+
+        theme(legend.position="none")
+VpPl <-  ggplot(iris, aes(Species, Petal.Length, fill=Species)) + 
+        geom_violin(aes(color = Species), trim = T)+
+        scale_y_continuous("Petal Length", breaks= seq(0,30, by=.5))+
+        geom_boxplot(width=0.1)+
+        theme(legend.position="none")
+VpPw <-  ggplot(iris, aes(Species, Petal.Width, fill=Species)) + 
+        geom_violin(aes(color = Species), trim = T)+
+        scale_y_continuous("Petal Width", breaks= seq(0,30, by=.5))+
+        geom_boxplot(width=0.1)+
+        labs(title = "Iris Box Plot", x = "Species")
+# Plot all visualizations
+grid.arrange(VpSl  + ggtitle(""),
+             VpSw  + ggtitle(""),
+             VpPl + ggtitle(""),
+             VpPw + ggtitle(""),
+             nrow = 2)
+ggpairs(iris, ggplot2::aes(colour = Species, alpha = 0.4))             
+
+```
+
+Divide the Iris dataset into training and test dataset to apply KNN classification. 80% of the data is used for training while the KNN classification is tested on the remaining 20% of the data.
+```{r echo=T}
+iris[,1:4] <- scale(iris[,1:4])
+setosa<- rbind(iris[iris$Species=="setosa",])
+versicolor<- rbind(iris[iris$Species=="versicolor",])
+virginica<- rbind(iris[iris$Species=="virginica",])
+
+ind <- sample(1:nrow(setosa), nrow(setosa)*0.8)
+iris.train<- rbind(setosa[ind,], versicolor[ind,], virginica[ind,])
+iris.test<- rbind(setosa[-ind,], versicolor[-ind,], virginica[-ind,])
+iris[,1:4] <- scale(iris[,1:4])
+```
+
+Then train and evaluate
+```{r echo=T}
+library(class)
+library(gmodels)
+error <- c()
+for (i in 1:15)
+{
+  knn.fit <- knn(train = iris.train[,1:4], test = iris.test[,1:4], cl = iris.train$Species, k = i)
+  error[i] = 1- mean(knn.fit == iris.test$Species)
+}
+
+ggplot(data = data.frame(error), aes(x = 1:15, y = error)) +
+  geom_line(color = "Blue")
+
+iris_test_pred1 <- knn(train = iris.train[,1:4], test = iris.test[,1:4], cl = iris.train$Species,k = 7,prob=TRUE) 
+table(iris.test$Species,iris_test_pred1)
+CrossTable(x = iris.test$Species, y = iris_test_pred1,prop.chisq=FALSE) 
 ```
 
 ## Classification: cell segmentation {#knn-cell-segmentation}
