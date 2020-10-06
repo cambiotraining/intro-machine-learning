@@ -172,7 +172,7 @@ Data slicing is a step to split data into train and test set. Training data set 
 
 ```{r}
 set.seed(3033)
-intrain <- createDataPartition(y = car_df$V7, p= 0.7, list = FALSE)
+intrain <- createDataPartition(y = car_df$V1, p= 0.7, list = FALSE)
 training <- car_df[intrain,]
 testing <- car_df[-intrain,]
 ```
@@ -230,7 +230,7 @@ For our 1st record of testing data classifier is predicting class variable as â€
 
 ```{r}
 test_pred <- predict(dtree_fit, newdata = testing)
-confusionMatrix(test_pred, as.factor(testing$V7) )  #check accuracy
+confusionMatrix(test_pred, testing$V7 )  #check accuracy
 ```
 
 The above results show that the classifier with the criterion as information gain is giving 83.72% of accuracy for the test set.
@@ -263,7 +263,7 @@ Our model is trained with cp = 0.01123596. Now, itâ€™s time to predict target va
 
 ```{r}
 test_pred_gini <- predict(dtree_fit_gini, newdata = testing)
-confusionMatrix(test_pred_gini, as.factor(testing$V7) )  #check accuracy
+confusionMatrix(test_pred_gini, testing$V7 )  #check accuracy
 ```
 
 The above results show that the classifier with the criterion as gini index is giving 86.05% of accuracy for the test set. In this case, our classifier with criterion gini index is giving better results.
@@ -277,6 +277,39 @@ The above results show that the classifier with the criterion as gini index is g
 *Bagging* is a technique used to reduce the variance of predictions by combining the result of multiple classifiers modeled on different sub-samples of the same data set. 
 
 *Boosting* refers to a family of algorithms which converts weak learner to strong learner by combing the prediction of each weak learner using methods like average/ weighted average or by considering a prediction that has a higher vote. Gradient boosting and XGboost are examples of boosting algorithms. 
+
+**Iris example for Decision Trees**
+
+Even if we already know the classes for the 150 instances of irises, it could be interesting to create a model that predicts the species from the petal and sepal width and length. One model that is easy to create and understand is a decision tree, which can be created with the C5.0 package.
+
+```{r}
+if(!require(C50)){install.packages("C50")}
+library(C50)
+input <- iris[,1:4]
+output <- iris[,5]
+model1 <- C5.0(input, output, control = C5.0Control(noGlobalPruning = TRUE,minCases=1))
+summary(model1)
+plot(model1, main="C5.0 Decision Tree - Unpruned, min=1")
+```
+
+We can play with the parameters of the classifier to see better/simpler/more complete/more complex trees. Here's a simpler one:
+
+```{r}
+model2 <- C5.0(input, output, control = C5.0Control(noGlobalPruning = FALSE))
+plot(model2, main="C5.0 Decision Tree - Pruned")
+plot(model2, type='simple')
+summary(model2)
+#We can "zoom into" the usage of features for creation of the model:
+C5imp(model2,metric='usage')
+```
+
+Now I have a model. Can we predict the class from the numerical attributes?
+```{r}
+newcases <- iris[c(1:3,51:53,101:103),]
+newcases
+predicted <- predict(model2, newcases, type="class")
+predicted
+```
 
 ## Random Forest
 
@@ -314,7 +347,6 @@ library(randomForest)
 ```{r}
 ## Read data
 Example<-read.csv(file="data/Decision_tree_and_RF/bank.csv",header = T)
-Example$y = as.factor(Example$y)
 ```
 
 Input dataset has 20 independent variables and a target variable. The target variable y is binary.
@@ -442,6 +474,25 @@ confusionMatrix(data=Example.val$predicted.response,
                 positive='yes')
 ```
 Accuracy level has dropped to 91.8% but still significantly higher. 
+
+**Iris data example**
+
+```{r rf1}
+library(randomForest)
+ind <- sample(2,nrow(iris),replace=TRUE,prob=c(0.7,0.3))
+trainData <- iris[ind==1,]
+testData <- iris[ind==2,]
+iris.rf <- randomForest(Species~.,data=trainData,ntree=100,proximity=TRUE)
+table(predict(iris.rf),trainData$Species)
+print(iris.rf)
+#plot(iris.rf)
+importance(iris.rf)
+varImpPlot(iris.rf)
+iris.pred<-predict(iris.rf,newdata=testData)
+table(iris.pred, testData$Species)
+```
+
+As observed for the previous examples, the discriminative features are the petal length and the petal width.
 
 
 *Acknowledgement: the above data is from a machine-learning database and the code is discusses*: http://dni-institute.in/blogs/random-forest-using-r-step-by-step-tutorial/*
