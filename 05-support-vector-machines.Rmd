@@ -255,7 +255,7 @@ plot(svmTune, metric = "ROC", scales = list(x = list(log =2)))
 Predictions on test set.
 ```{r echo=T}
 svmPred <- predict(svmTune, moonsTest[,c(1:2)])
-confusionMatrix(svmPred, as.factor(moonsTest[,3]))
+confusionMatrix(svmPred, moonsTest[,3])
 ```
 
 Get predicted class probabilities so we can build ROC curve.
