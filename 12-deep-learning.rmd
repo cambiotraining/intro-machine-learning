@@ -4,16 +4,16 @@
 
 ## Multilayer Neural Networks
 
-Neural networks with multiple layers are increasingly used to attack a variety of complex problems under the umberella of *deep learning* [@angermueller2016deep].
+Neural networks with multiple layers are increasingly used to attack a variety of complex problems under the umbrella of *deep learning* [@angermueller2016deep].
 
 In this final section we will explore the basics of *deep learning* for image classification using a set of images taken from the animated TV series [Rick and Morty](https://en.wikipedia.org/wiki/Rick_and_Morty). For those unfamiliar with Rick and Morty, the series revolves around the adventures of Rick Sanchez, an alcoholic, arguably sociopathic scientist, and his neurotic grandson, Morty Smith. Although many scientists aspire to be like Rick, they're usually more like a Jerry. 
 
-Our motivating goal in this section is to develop an image classification algorithm capable of telling us whether any given image contains Rick or not: a binary classification task with two classes, *Rick* or *not Rick*. For training purposes we have downloaded several thousand random images of Rick and several thousand images without Rick from the website [Master of All Science](https://masterofallscience.com).
+Our motivating goal in this section is to develop an image classification algorithm capable of telling us whether any given image contains Rick or not: a binary classification task with two classes, *Rick* or *not Rick*. For training purposes we have downloaded several thousand random images of Rick and several thousand images without Rick from the website [Master of All Science] (https://masterofallscience.com).
 
-The main ideas to take home from this sectionn are:
+The main ideas to take home from this section are:
 
 1. Yes, look at the data.
-2. There are a limitless vareity of architecutres one can build into a neural network, picking one is often arbitrary or *at best* empircally-motivated by previous works
+2. There are a limitless variety of architectures one can build into a neural network, picking one is often arbitrary or *at best* empirically-motivated by previous works
 3. Some approaches are better designed for some datasets
 
 ### Reading in images
@@ -31,11 +31,11 @@ grid::grid.newpage()
 grid.raster(im, interpolate=FALSE, width = 0.5)
 ```
 
-Let's understand take a closer look at this dataset. We can use the funciton {dim(im)} to return the image dimensions. In this case each image is stored as a jpeg file, with $90 \times 160$ pixel resolution and $3$ colour channels (RGB). This loads into R as $160 \times 90 \times 3$ array. We could start by converting the image to grey scale, reducing the dimensions of the input data. However, each channel will potentially carry novel information, so ideally we wish to retain all of the information. You can take a look at what information is present in the different channels by plotting them individually using e.g., {grid.raster(im[,,3], interpolate=FALSE)}. Whilst the difference is not so obvious here, we can imagine sitations where different channels could be dramamtically different, for example, when dealing with remote observation data from satellites, where we might have visible wavelength alongside infrared and a variety of other spectral channels.
+Let's understand take a closer look at this dataset. We can use the function {dim(im)} to return the image dimensions. In this case each image is stored as a jpeg file, with $90 \times 160$ pixel resolution and $3$ colour channels (RGB). This loads into R as $160 \times 90 \times 3$ array. We could start by converting the image to grey scale, reducing the dimensions of the input data. However, each channel will potentially carry novel information, so ideally we wish to retain all of the information. You can take a look at what information is present in the different channels by plotting them individually using e.g., {grid.raster(im[,,3], interpolate=FALSE)}. Whilst the difference is not so obvious here, we can imagine situations where different channels could be dramatically different, for example, when dealing with remote observation data from satellites, where we might have visible wavelength alongside infrared and a variety of other spectral channels.
 
 Since we plan to retain the channel information, our input data is a tensor of dimension $90 \times 160 \times 3$ i.e., height x width x channels. Note that this ordering is important, as the the package we're using expects this ordering (be careful, as other packages can expect a different ordering). 
 
-Before building a neural network we first have to load the data and construct a training, validation, and test set of data. Whilst the package we're using has the ability to specify this on the fly, I prefer to manually seperate out training/test/validation sets, as it makes it easier to later debug when things go wrong. 
+Before building a neural network we first have to load the data and construct a training, validation, and test set of data. Whilst the package we're using has the ability to specify this on the fly, I prefer to manually separate out training/test/validation sets, as it makes it easier to later debug when things go wrong. 
 
 First load all *Rick* images and all *not Rick* images from their directory. We can get a list of all the *Rick* and *not Rick* images using {list.files}:
 
@@ -44,7 +44,7 @@ files1 <- list.files(path = "data/RickandMorty/data/AllRickImages/", pattern = "
 files2 <- list.files(path = "data/RickandMorty/data/AllMortyImages/", pattern = "jpg")
 ```
 
-After loading the lsit of files we can see we have $2211$ images of *Rick* and $3046$ images of *not Rick*. Whilst this is a slightly unbiased dataset it is not dramatically so; in cases where there is extreme inbalance in the number of class observations we may have to do something extra, such as data augmentation, or assinging weights during training.
+After loading the list of files we can see we have $2211$ images of *Rick* and $3046$ images of *not Rick*. Whilst this is a slightly unbiased dataset it is not dramatically so; in cases where there is extreme imbalance in the number of class observations we may have to do something extra, such as data augmentation, or assigning weights during training.
 
 We next preallocate an empty array to store these training images for the *Rick* and *not Rick* images (an array of dimension $5257 \times 90 \times 160 \times 3$):
 
@@ -78,9 +78,9 @@ labels <- rbind(matrix(0, length(files1), 1), matrix(1, length(files2), 1))
 allY <- to_categorical(labels, num_classes = 2)
 ```
 
-Obviously in the snippet of code above we have $2$ classes; we could just as easily perform classificaiton with more than $2$ classes, for example if we wanted to classify *Ricky*, *Morty*, or *Jerry*, and so forth.
+Obviously in the snippet of code above we have $2$ classes; we could just as easily perform classification with more than $2$ classes, for example if we wanted to classify *Ricky*, *Morty*, or *Jerry*, and so forth.
 
-We must now split our data in training sets, validation sets, and test sets. In fact I have already stored some seperate "test" set images in another folder that we will load in at the end, so here we only need to seperate images into training and validation sets. It's important to note that we shouldn't simply take the first $N$ images for training with the remainder used for validation/testing, since this may introduce artefacts. For example, here we've loaded in all the *Rick* images in first, with the *not Rick* images loaded in second: if we took, say, the first $2000$ images for training, we would be training with only Rick images, which makes our task impossible, and our algorithm will fail catastrophically.
+We must now split our data in training sets, validation sets, and test sets. In fact I have already stored some separate "test" set images in another folder that we will load in at the end, so here we only need to separate images into training and validation sets. It's important to note that we shouldn't simply take the first $N$ images for training with the remainder used for validation/testing, since this may introduce artefacts. For example, here we've loaded in all the *Rick* images in first, with the *not Rick* images loaded in second: if we took, say, the first $2000$ images for training, we would be training with only Rick images, which makes our task impossible, and our algorithm will fail catastrophically.
 
 Although there are more elegant ways to shuffle data using {caret}, here we are going to manually randomly permute the data, and then take the first $4000$ permuted images for training, with the remainder for validation (Note: it's crucial to permute the $Y$ data in the same way).
 
@@ -108,13 +108,13 @@ A user friendly package for *neural networks* is available via [keras](https://k
 
 Before we can use kerasR we first need to load the kerasR library in R (we also need to install keras and either theano and tensorflow).
 
-And so we come to specifying the model itself. Keras has an simple and intuitive way of specifying [layers](https://keras.io/layers/core/) of a neural network, and kerasR makes good use of this. We first initialie the model:
+And so we come to specifying the model itself. Keras has an simple and intuitive way of specifying [layers](https://keras.io/layers/core/) of a neural network, and kerasR makes good use of this. We first initialize the model:
 
 ```{r, eval=FALSE}
 mod <- Sequential()
 ```
 
-This tells keras that we're using the Sequential API i.e., a network with the first layer connected to the second, the second to the third and so forth, which distinguishes it from more complex networks possible using the Model API. Once we've specified a sequential model, we have to stard adding layers to the neural network. 
+This tells keras that we're using the Sequential API i.e., a network with the first layer connected to the second, the second to the third and so forth, which distinguishes it from more complex networks possible using the Model API. Once we've specified a sequential model, we have to start adding layers to the neural network. 
 
 A standard layer of neurons, like the networks we build in the previous chapter, can be specified using the {Dense} command; the first layer of our network must also include the dimension of the input. So, for example, if our input data was a vector of dimension $1 \times 40$, we could add an input layer via:
 
@@ -122,7 +122,7 @@ A standard layer of neurons, like the networks we build in the previous chapter,
 mod$add(Dense(100, input_shape = c(1,40)))
 ```
 
-We also need to specfy the activation function to the next level. This can be done via {Activation()}, so our snippet of code using a Rectified Linear Unit (relu) activation would look something like:
+We also need to specify the activation function to the next level. This can be done via {Activation()}, so our snippet of code using a Rectified Linear Unit (relu) activation would look something like:
 
 ```{r, eval=FALSE}
 mod$add(Dense(100, input_shape = c(1,40)))
@@ -226,11 +226,11 @@ set.seed(12345)
 keras_fit(mod, trainX, trainY, validation_data = list(valX, valY), batch_size = 100, epochs = 25, verbose = 1)
 ```
 
-For this model we achieved an accuracy of above $0.63$ on the validation dataset at epoch (which had a corresponding accuracy $>0.59$ on the training set). Not great is an understatement. In fact, if we consider the slight inbalance in the number of classes, a niave algorithm that always assigns the data to *not Rick* would achieve an accuracy of $0.57$ and $0.60$ in the training and validation sets respectively. Another striking observation is that the accuracy itself doesn't appear to be changing much during training: a possible sign that something is amiss.
+For this model we achieved an accuracy of above $0.63$ on the validation dataset at epoch (which had a corresponding accuracy $>0.59$ on the training set). Not great is an understatement. In fact, if we consider the slight imbalance in the number of classes, a naive algorithm that always assigns the data to *not Rick* would achieve an accuracy of $0.57$ and $0.60$ in the training and validation sets respectively. Another striking observation is that the accuracy itself doesn't appear to be changing much during training: a possible sign that something is amiss.
 
 Let's try adding in another layer to the network. Before we do so, another important point to note is that the model we have at the end of training is the one one we generated for the latest epoch, which is not necessarily the model that gives us the best validation accuracy. Since our aim is to have the best predictive model we will also have to introduce a *callback*.
 
-In the snippet of code, below, we contruct a new network, with an additional layer containing $70$ neurons, and introduce a *callback* that returns the best model at the end of our training:
+In the snippet of code, below, we construct a new network, with an additional layer containing $70$ neurons, and introduce a *callback* that returns the best model at the end of our training:
 
 ```{r}
 mod <- Sequential()
