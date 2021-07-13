@@ -26,15 +26,25 @@ PCA is not a dimensionality reduction technique *per se*, but an alternative way
 
 To illustrate PCA we can repeat the analysis of [@ringner2008principal] using the dataset of [@saal2007poor] (GEO GSE5325). This dataset contains gene expression profiles for $105$ breast tumour samples measured using Swegene Human 27K RAP UniGene188 arrays. Within the population of cells, [@ringner2008principal] focused on the expression of *GATA3* and *XBP1*, whose expression was known to correlate with estrogen receptor status [^](Breast cancer cells may be estrogen receptor positive, ER$^+$, or negative, ER$^-$, indicating capacity to respond to estrogen signalling, which has impliations for treatment), representing a two dimensional system. A pre-processed dataset containing the expression levels for *GATA3* and *XBP1*, and ER status, can be loaded into R using the code, below:
 
-```{r echo=T}
-D <- read.csv(file = "data/GSE5325/GSE5325_markers.csv", header = TRUE, sep = ",", row.names=1)
+```{r echo=T, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(ggfortify)
+library(GGally)
+D <- read.csv( 'data/GSE5325/GSE5325_markers.csv', row.names = 1)
 ```
 
 For illustration purposes we've also included 3 additional variables that have been generated as independent random samples from a univariate normal distribution. We thus have a a $5$ dimensional system, with $x$ and $y$ representing the expression levels of *GATA3* and *XBP1* (rows 1 and 2). For convenience we also have the ER status, which we will not use directly, but simply as a visual readout of our appraoch. We start by plotting *GATA3* expression versus *XBP1*, and color by ER status:
 
 ```{r echo=T}
-plot(t(D[1,which(D[6,]==0)]),t(D[2,which(D[6,]==0)]),'p',col='red', ylab="XBP1", xlab="GATA3",xlim=c(min(D[2,],na.rm = TRUE), max(D[2,],na.rm = TRUE)),ylim=c(min(D[1,],na.rm = TRUE), max(D[1,],na.rm = TRUE)))
-points(t(D[1,which(D[6,]==1)]),t(D[2,which(D[6,]==1)]),'p',col='blue')
+D_trnas <- D %>% 
+  t() %>%  
+  as.data.frame() %>% 
+  rownames_to_column(var='sample') %>% 
+  na.omit() %>% 
+  mutate( ER = as.factor(ER))
+
+ggplot( data=D_trnas, mapping = aes(x=GATA3, y=XBP1, color = ER))+
+  geom_point() 
 ```
 
 As this system is inherently low dimensional we can clearly see that ER status correlates with both *GATA3* and *XBP1* expression. We perform PCA in R using the \texttt{prcomp} function. To do so, we first filter out datapoints that have missing observations, as PCA does not, inherently, deal with missing observations. We will now run PCA using just the first two dimensions to understand what's going on:
@@ -42,14 +52,18 @@ As this system is inherently low dimensional we can clearly see that ER status c
 ```{r echo=T}
 Dommitsamps <- t(na.omit(t(D[,]))); #Get the subset of samples
 
-pca1  <- prcomp(t(Dommitsamps[1:2,]), center = TRUE, scale=FALSE)
-ERexp <- Dommitsamps[6,];
+pca1 <- prcomp( t(Dommitsamps[1:2,  ] ), center = TRUE, scale=FALSE  )
+summary(pca1)
 
-ER_neg <- pca1$x[which(ERexp==0),]
-ER_pos <- pca1$x[which(ERexp==1),]
+pca_data <- pca1$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var='sample')
 
-plot(ER_neg[,1],ER_neg[,2],'p',col='red', xlab="PC1", ylab="PC2",xlim=c(-4.5, 4.2),ylim=c(-3, 2.5))
-points(ER_pos[,1],ER_pos[,2],'p',col='blue')
+# add ER status
+pca_data <- inner_join(pca_data, D_trnas, by = 'sample') 
+
+ggplot(data=pca_data)  +
+  geom_point( mapping = aes(x=PC1, y=PC2, color=ER) )
 ```
 
 Note that the \texttt{prcomp} has the option to centre and scale the data. That is, to normalise each variable to have a zero-mean and unit variance. This is particularly important when dealing with variables that may exist over very different scales. For example, for ecological datasets we may have variables that were measured in seconds with others measured in hours. Without normalisation there would appear to be much greater variance in the variable measured in seconds, potentially skewing the results. In general, when dealing with variables that are measured on similar scales (for example gene expression) it is not desirable to normalise the data.
@@ -57,29 +71,49 @@ Note that the \texttt{prcomp} has the option to centre and scale the data. That 
 We can better visualise what the PCA has done by plotting the original data side-by-side with the transformed data (note that here we have plotted the negative of PC1).
 
 ```{r echo=T}
-par(mfrow=c(1,2))
-plot(t(D[1,which(D[6,]==0)]),t(D[2,which(D[6,]==0)]),'p',col='red', ylab="XBP1", xlab="GATA3",xlim=c(min(D[2,],na.rm = TRUE), max(D[2,],na.rm = TRUE)),ylim=c(min(D[1,],na.rm = TRUE), max(D[1,],na.rm = TRUE)))
-points(t(D[1,which(D[6,]==1)]),t(D[2,which(D[6,]==1)]),'p',col='blue')
-plot(-ER_neg[,1],ER_neg[,2],'p',col='red', xlab="-PC1", ylab="PC2",xlim=c(-4.5, 4.2),ylim=c(-3, 2.5))
-points(-ER_pos[,1],ER_pos[,2],'p',col='blue')
+p1 <- ggplot(data=pca_data)  +
+  geom_point( mapping = aes(x=GATA3, y=XBP1, color=ER) )
+p2 <- ggplot(data=pca_data)  +
+  geom_point( mapping = aes(x=PC1, y=PC2, color=ER) )
+
+plotList <- list(p1,p2)
+
+pm <- ggmatrix(plotList, nrow = 1, ncol=2)
+
+pm
 ```
 
 We can seen that we have simply rotated the original data, so that the greatest variance aligns along the x-axis and so forth. We can find out how much of the variance each of the principle components explains by looking at \texttt{pca1$sdev}:
 
 ```{r echo=T}
-par(mfrow=c(1,1))
-barplot(((pca1$sdev)^2 / sum(pca1$sdev^2))*100, names.arg=c("PC1","PC2"), ylab="% variance")
+pca_var <- tibble(
+  PC = str_c( 'PC', c(1:length(pca1$sdev))),
+  varience = (pca1$sdev^2  / sum(pca1$sdev^2)) * 100
+)
+
+ggplot(data=pca_var) +
+  geom_bar( mapping =  aes(x=PC, y=varience), stat = 'identity') +
+  labs(
+    y = '% varience'
+  ) +
+  theme_classic()
+
 ```
 
 PC1 explains the vast majority of the variance in the observations. The dimensionality reduction step of PCA occurs when we choose to discard the higher PCs. Of course, by doing so we loose some information about the system, but this may be an acceptable loss compared to the increased interpretability achieved by visualising the system in lower dimensions. In the example from [@ringner2008principal] we can visualise the data using only PC1.
 
 ```{r echo=T}
-par(mfrow=c(1,1))
-plot(-ER_neg[,1],matrix(-1, 1, length(ER_neg[,1])),'p',col='red', xlab="PC1",xlim=c(-4, 3),ylim=c(-1.5,1.5),yaxt="n", ylab="")
-points(-ER_pos[,1],matrix(-1, 1, length(ER_pos[,1])),'p',col='blue')
-points(-ER_neg[,1],matrix(1, 1, length(ER_neg[,1])),'p',col='red', xlab="PC1",xlim=c(-4, 3))
-points(-ER_pos[,1],matrix(0, 1, length(ER_pos[,1])),'p',col='blue')
-axis(side = 2, at = seq(-1, 1, by = 1), labels = c("All","ER-","ER+"))
+ggplot( data=pca_data) +
+  geom_point( mapping = aes(x=PC1, y=1, color = ER)) +
+  geom_point( data  =  filter(pca_data, ER ==  0),  mapping = aes(x=PC1,  y=2), color='red') +
+  geom_point( data  =  filter(pca_data, ER ==  1),  mapping = aes(x=PC1,  y=3), color='blue') +
+  scale_color_manual( values = c('red', 'blue' ) ) +
+  scale_y_continuous( breaks = c(1,2,3), label = c( 'All', 'ER-', 'ER+')) +
+  theme(
+    legend.position = 'none',
+    axis.title.y = element_blank(),
+    axis.ticks.y = 
+  )
 ```
 
 So reducing the system down to one dimension appears to have done a good job at separating out the ER$^+$ cells from the ER$^-$ cells, suggesting that it may be of biological use. Precisely how many PCs to retain remains subjective. For visualisation purposed, it is typical to look at the first two or three only. However, when using PCA as an intermediate step within more complex workflows, more PCs are often retained e.g., by thresholding to a suitable level of explanatory variance.
@@ -89,10 +123,41 @@ So reducing the system down to one dimension appears to have done a good job at 
 In the original data, the individual axes had very obvious interpretations: the x-axis represented expression levels of *GATA3* and the y-axis represented the expression level of *XBP1*. Other than indicating maximum variance, what does PC1 mean? The individual axes represent linear combinations of the expression of various genes. This may not be immediately intuitive, but we can get a feel by projecting the original axes (gene expression) onto the (reduced dimensional) co-ordinate system.
 
 ```{r echo=T}
-genenames <- c("GATA3","XBP1")
-plot(-pca1$rotation[,1],pca1$rotation[,2], type="n", xlim=c(-2, 2), ylim=c(-2, 2), xlab="PC1", ylab="PC2")
-text(-pca1$rotation[,1], pca1$rotation[,2], genenames, cex = .4)
-arrows(0, 0, x1 = -pca1$rotation[,1], y1 = -pca1$rotation[,2],length=0.1)
+# score plot
+scores_df <- as.data.frame(pca1$x) %>% 
+  rownames_to_column(var='Sample')
+
+ggplot( data=scores_df, mapping = aes(x=PC1, y=PC2)) +
+  geom_point( ) +
+  geom_hline(  yintercept = 0, color='purple') +
+  geom_vline( xintercept = 0, color = 'orange') +
+  geom_text( mapping = aes(label=Sample), check_overlap = T, color='grey') +
+  theme_classic()
+
+
+## loading plot
+loadings_df <- pca1$rotation %>% 
+  as.data.frame() %>% 
+  rownames_to_column( var='gene')
+
+ggplot(data=loadings_df, mapping = aes(x=PC1, y=PC2)) +
+  geom_point() +
+  scale_x_continuous(  limits = c(-0.8, 0.8)) +
+  scale_y_continuous(limits = c(-0.8, 0.8)) +
+  geom_text( mapping = aes( label =  gene)) +
+  geom_hline(  yintercept = 0, color='blue') +
+  geom_vline(xintercept = 0, color='orange') +
+  geom_segment( mapping = aes( x=0,y=0, xend=PC1, yend=PC2), 
+                arrow = arrow(length=unit(0.25, 'cm')), inherit.aes = F) +
+  theme_classic()
+  
+
+## biplot
+autoplot(pca1, loadings = TRUE,
+         loadings.label = TRUE) +
+  geom_hline(  yintercept = 0, color='blue') +
+  geom_vline( xintercept = 0, color='orange') +
+  theme_classic()
 ```
 
 In this particular case, we can see that both genes appear to be reasonably strongly associated with PC1. When dealing with much larger systems e.g., with more genes, we can, of course, project the original axes into the reduced dimensional space. In general this is particularly useful for identifying genes associated with particular PCs, and ultimately assigning a biological interpretation to the PCs.
@@ -112,24 +177,31 @@ X <- matrix( c(2,4,2,0,0,0,0,0,0,0,
                  0,0,0,0,0,2,4,2,0,0,   
                  0,0,0,0,0,0,2,4,2,0,  
                  0,0,0,0,0,0,0,2,4,2), nrow=8,  ncol=10, byrow = TRUE)
+rownames(X) <- paste( 'G', 1:nrow(X), sep='')
 ```
 
 Or we can visualise by plotting a few of the genes:
 
 ```{r echo=T}
-plot(1:10,X[1,],type="l",col="red",xlim=c(0, 14),xlab="Time",ylab="Expression")
-points(1:10,X[2,],type="l",col="blue")
-points(1:10,X[5,],type="l",col="black")
-legend(8, 4, legend=c("gene 1", "gene 2", "gene 5"), col=c("red", "blue", "black"),lty=1, cex=0.8)
+hs_tab <- X %>% 
+  as.data.frame() %>% 
+  rename_all(str_replace, 'V', '') %>% 
+  mutate( gene = paste('gene', 1:nrow(.), sep='_')) %>% 
+  pivot_longer( cols=-gene, names_to = 'time', values_to = 'exp') %>% 
+  mutate( time=as.integer(time))
+ggplot( data=hs_tab) +
+  geom_line( mapping = aes(x=time, y=exp, color=gene)) +
+  theme_classic()
 ```
 
 By eye, we see that the data can be separated out by a single direction: that is, we can order the data from time/condition 1 through to time/condition 10. Intuitively, then, the data can be represented by a single dimension. Let's run PCA as we would normally, and visualise the result, plotting the first two PCs:
 
 ```{r echo=T}
-pca2 <- prcomp((X),center = TRUE,scale=FALSE)
-condnames = c('G1','G2','G3','G4','G5','G6','G7','G8')
-plot(pca2$x[,1:2],type="p",col="red",xlim=c(-5, 5),ylim=c(-5, 5))
-text(pca2$x[,1:2]+0.5, condnames, cex = 0.7)
+pca2 <- prcomp( X, center = TRUE, scale. = F )
+
+autoplot(pca2, label=T, padding = 1, label.repel = T) +
+  theme_classic()
+
 ```
 
 We see that the PCA plot has placed the datapoints in a horseshoe shape, with gene 1 becoming closer to gene 8. From the earlier plots of gene expression profiles we can see that the relationships between the various genes are not entirely straightforward. For example, gene 1 is initially correlated with gene 2, then negatively correlated, and finally uncorrelated, whilst no correlation exists between gene 1 and genes 5 - 8. These nonlinearities make it difficult for PCA which, in general, attempts to preserve large pairwise distances, leading to the well known horseshoe effect [@novembre2008interpreting,@reich2008principal]. These types of artefacts may be problematic when trying to interpret data, and due care must be given when these type of effects are seen.
@@ -146,34 +218,42 @@ Preprocessed data contains $\log_2$ normalised counts for around $400$ cells usi
 
 We will first run PCA on the data. Recall that the data is already log_2 normalised, with expression values beginning from row 4. Within R we would run:
 
-```{r echo=T}
+```{r echo=T, warning=FALSE, message=FALSE}
 set.seed(12345)
-D <- read.csv(file = "data/PGC_transcriptomics/PGC_transcriptomics.csv", header = TRUE, sep = ",", row.names=1)
-genenames <- rownames(D)
-genenames <- genenames[4:nrow(D)]
-pcaresult <- prcomp(t(D[4:nrow(D),1:ncol(D)]), center = TRUE, scale = FALSE)
+sc_rna <- read_csv(file = "data/PGC_transcriptomics/PGC_transcriptomics.csv")
+
+metadata <- sc_rna %>% 
+  slice( 1:4) %>% 
+  pivot_longer( cols=-Sample, names_to = 'cell_type', values_to  = 'index') %>% 
+  pivot_wider( names_from = Sample, values_from = index) %>% 
+  mutate(group=str_remove(cell_type, '_.*$')) %>% 
+  mutate_if( is.numeric, as.factor)  
+  
+
+sc_rna_fil <- sc_rna %>% 
+  slice(-c(1:4)) %>% 
+  column_to_rownames(var='Sample') %>% 
+  as.matrix()
+
+genenames <- rownames(sc_rna_fil)
+pcaresult <- prcomp( t(sc_rna_fil)  , center = TRUE, scale = FALSE)
+
+autoplot( pcaresult, 
+          data=metadata,
+          colour='group'
+          )
 ```
 
 Here we have opted to centre the data, but have not normalised each gene to be zero-mean. This is beacuse we are dealing entirely with gene expression, rather than a variety of variables that may exist on different scales. 
 
-We can extract the positions of individual cells from the \texttt{pcaresult$x} variable. In the snippet, below, we index the different cells types (ESC, pre-implantation cells, primordial germ cells and somatic cells) for easier plotting. 
-
-```{r echo=T}
-y1 <- pcaresult$x[which(D[1,]==-1),1:2] # PCA
-y2 <- pcaresult$x[which(D[1,]==0),1:2]  #
-y3 <- pcaresult$x[which(D[1,]==1),1:2]  #
-y4 <- pcaresult$x[which(D[1,]==2),1:2]  #
-```
-
-Finally, we can plot the data as follows:
+We can plot the data as follows:
 
 
 ```{r echo=T}
-plot(y1,type="p",col="red",xlim=c(-100, 100),ylim=c(-50, 50))
-points(y2,type="p",col="black")
-points(y3,type="p",col="blue")
-points(y4,type="p",col="green")
-legend(-95, 50, legend=c("ESC", "preimp", "PGC", "soma"), col=c("red", "black", "blue", "green"), pch="o", bty="n", cex=0.8)
+autoplot( pcaresult, 
+          data=metadata,
+          colour='group'
+          )
 ```
 
 From the plot, we can see PCA has done a reasonable job of separating out various cells. For example, a cluster of PGCs appears at the top of the plot, with somatic cells towards the lower right hand side. Pre-implantation embryos and ESCs appear to cluster together: perhaps this is not surprising as ESCs are derived from blastocyst cells. Loosely, we can interpret PC1 as dividing pre-implantation cells from somatic cells, with PC2 separating out PGCs.
@@ -181,74 +261,122 @@ From the plot, we can see PCA has done a reasonable job of separating out variou
 Previously we used PCA to reduce the dimensionality of our data from thousands of genes down to two principle components. By eye, PCA appeared to do a reasonable job separating out different cell types. A useful next step might therefore be to perform clustering on the reduced dimensional space. We will go into more details about clusterin in subsequent sections, but for now we will simply use clustering as a tool for seperating out our datasets. We can run k-means clustering on a matrix using:
 
 ```{r echo=T}
-clust <- kmeans(pcaresult$x[,1:2], 4, iter.max = 1000)
+set.seed(12345)
+dim( pcaresult$x)
+k_clust <- kmeans( x=pcaresult$x[,1:2], centers = 4, iter.max = 1000)
+
+#  get first 2 PCs
+sc_pc_tab <- pcaresult$x %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var='cell_type') %>% 
+  select(cell_type, PC1, PC2)
+
+# join pc and metadata
+sc_pc_tab <- left_join(sc_pc_tab, metadata, by='cell_type')
+
+# cell type and cluster number
+ct_clu <- tibble( cell_type=names(k_clust$cluster),
+                  kmean_clusters  = as.factor(k_clust$cluster)
+                  )
+
+sc_pc_tab <- left_join(sc_pc_tab, ct_clu, by='cell_type')
+
+# plot PCA
+ggplot( data=sc_pc_tab, mapping = aes(x=PC1, y=PC2, color=group, shape  = kmean_clusters)) +
+  geom_point()
 ```
 
-We can now compare the cluster assignment to the known cell types:
-
-```{r echo=T}
-Labels <- vector("character", ncol(D))
-Labels[which(D[1,]==-1)] = "ESC"
-Labels[which(D[1,]==0)] = "preimp"
-Labels[which(D[1,]==1)] = "PGC"
-Labels[which(D[1,]==2)] = "soma"
-
-clusterresults <- rbind(Labels,clust$cluster)
-```
-
-We note that, in general PGCs fall into one or more separate clusters, with soma also separating out well. ESCs and pre-implantation tend to fall into identical clusters. We can take a look at what cell types fall into a specific cluster:
-
-```{r echo=T}
-clusterresults[1,which(clusterresults[2,]==1)]
-clusterresults[1,which(clusterresults[2,]==2)]
-clusterresults[1,which(clusterresults[2,]==3)]
-clusterresults[1,which(clusterresults[2,]==4)]
-```
 
 ## Exercise 2.3.
 
 In our previous section we identified clusters associated with various groups. In our application cluster 1 was associated primarily with pre-implantation cells, with cluster 3 associated with PGCs. We could therefore empirically look for genes that are differentially expressed. Since we know SOX17 is associated with PGC specification in humans [@irie2015sox17,@tang2015unique] let's first compare the expression levels of SOX17 in the two groups:
 
 ```{r echo=T}
-t.test(D[which(genenames=="SOX17")+3, which(clusterresults[2,]==1)],D[which(genenames=="SOX17")+3, which(clusterresults[2,]==3)])
+# SOX17  gene expression
+gene_exp <- sc_rna_fil %>% 
+  as.data.frame() %>% 
+  rownames_to_column( var='gene') %>% 
+  filter( gene == 'SOX17' ) %>% 
+  pivot_longer( cols=-gene, names_to = 'cell_type', values_to = 'expression')
+
+# join metadata and exp. tab
+gene_exp <- left_join(gene_exp, sc_pc_tab, by='cell_type') 
+
+gene_clu1_exp <- gene_exp %>% 
+  filter(kmean_clusters == '1') %>% 
+  pull(expression)
+
+gene_clu2_exp <- gene_exp %>% 
+  filter(kmean_clusters == '2') %>% 
+  pull(expression)
+
+t.test(gene_clu1_exp, gene_clu2_exp)
 ```
 
 Typically we won't always know the important genes, but can perform an unbiased analysis by testing all genes.
 
 ```{r echo=T}
-pvalstore <- vector(mode="numeric", length=length(genenames))
-for (i in c(1:length(genenames))){
-pvals <- t.test(D[which(genenames==genenames[i])+3, which(clusterresults[2,]==1)],D[which(genenames==genenames[i])+3, which(clusterresults[2,]==3)])
-pvalstore[i]  <-  pvals$p.value
+all_genes <- row.names(sc_rna_fil)
+
+p_values <- c()
+
+for( each_gene in all_genes){
+  gene_exp <- sc_rna_fil %>% 
+    as.data.frame() %>% 
+    rownames_to_column( var='gene') %>% 
+    filter( gene == each_gene ) %>% 
+    pivot_longer( cols=-gene, names_to = 'cell_type', values_to = 'expression')
+  
+  # add metadata tp exp tab
+  gene_exp <- left_join(gene_exp, sc_pc_tab, by='cell_type') 
+  
+  gene_clu1_exp <- gene_exp %>% 
+    filter(kmean_clusters == '1') %>% 
+    pull(expression)
+  
+  gene_clu2_exp <- gene_exp %>% 
+    filter(kmean_clusters == '2') %>% 
+    pull(expression)
+  
+  two_sam_test <- t.test(gene_clu1_exp, gene_clu2_exp)
+  
+  p_values <- c(p_values, two_sam_test$p.value)
 }
-sortedgenes <- genenames[order(pvalstore)]
+
+genes_p_vals <- tibble(gene=all_genes,
+                       pval=p_values)
+
 ```
 
 Within our example, the original axes of our data have very obvious solutions: the axes represent the expression levels of individual genes. The PCs, however, represent linear combinations of various genes, and do not have obvious interpretations. To find an intuition, we can project the original axes (genes) into the new co-ordinate system. This is stored in \texttt{pcaresult$rotation} variable.
 
 ```{r echo=T}
-plot(pcaresult$rotation[,1:2],type="n")
-text(pcaresult$rotation[,1:2], genenames, cex = .4)
+# PCA rotation data
+pca_rot <- pcaresult$rotation %>% 
+  as.data.frame() %>% 
+  rownames_to_column(var='gene')
+
+ggplot(data=pca_rot) +
+  geom_text( mapping = aes( x=PC1, y=PC2, label  = gene), size=1) 
 ```
 
 Okay, this plot is a little busy, so let's focus in on a particular region. Recall that PGCs seemed to lie towards the upper section of the plot (that is PC2 separated out PGCs from other cell types), so we'll take a look at the top section:
 
-```{r echo=T}
-plot(pcaresult$rotation[,1:2],type="n",xlim=c(-0.07, 0.07),ylim=c(0.04, 0.1))
-genenames <- rownames(D)
-genenames <- genenames[4:nrow(D)]
-text(pcaresult$rotation[,1:2], genenames, cex = .4)
+```{r echo=T, warning=FALSE, message=FALSE}
+ggplot(data=pca_rot) +
+  geom_text( mapping = aes( x=PC1, y=PC2, label  = gene), size=2) +
+  scale_y_continuous( limits = c(0.04,0.1))
 ```
 
 We now see a number of genes that are potentially associated with PGCs. These include a number of known PGCs, for example, both SOX17 and PRDM1 (which can be found at co-ordinates PC1=0, PC2= 0.04) represent two key specifiers of human PGC fate [@irie2015sox17,@tang2015unique,@kobayashi2017principles]. We further note a number of other key regulators, such as DAZL, have been implicated in germ cell development, with DAZL over expressed ESCs forming spermatogonia-like colonies in a rare instance upon xenotransplantation [@panula2016over].
 
 We can similarly look at regions associated with early embryogenesis by concentrating on the lower half of the plot:
 
-```{r echo=T}
-plot(pcaresult$rotation[,1:2],type="n",xlim=c(0.0, 0.07),ylim=c(-0.07, -0.03))
-genenames <- rownames(D)
-genenames <- genenames[4:nrow(D)]
-text(pcaresult$rotation[,1:2], genenames, cex = .4)
+```{r echo=T, message=FALSE, warning=FALSE}
+ggplot(data=pca_rot) +
+  geom_text( mapping = aes( x=PC1, y=PC2, label  = gene), size=2) +
+  scale_y_continuous( limits = c(-0.07,-0.03)) +
+  scale_x_continuous( limits=c(0,0.07))
 ```
 
 This appears to identify a number of genes associated with embryogenesis, for example, DPPA3, which encodes for a maternally inherited factor, Stella, required for normal pre-implantation development [@bortvin2004dppa3,@payer2003stella] as well as regulation of transcriptional and endogenous retrovirus programs during maternal-to-zygotic transition [@Huang2017stella].
@@ -287,48 +415,58 @@ set.seed(12345)
 To get a feel for tSNE we will first generate some artificial data. In this case we generate two different groups that exist in a 3-dimensional space. We choose these groups to be Gaussian distributed, with different means and variances:
 
 ```{r echo=T}
-D1 <- matrix( rnorm(5*3,mean=0,sd=1), 100, 3) 
-D2 <- matrix( rnorm(5*3,mean=5,sd=3), 100, 3) 
-G1 <- matrix( 1, 100, 1) 
-G2 <- matrix( 2, 100, 1) 
+D1 <- matrix( rnorm(5*3, mean=0,sd=1), nrow=100, ncol=3 )
+D2 <- matrix( rnorm(5*3, mean=5,sd=3), nrow=100, ncol=3 ) 
 D3 <- rbind(D1,D2)
-G3 <- rbind(G1,G2)
-colors <- c("red", "blue")
-colors <- colors[G3]
+colors <- c(rep('red', 100), rep('blue', 100))
 scatterplot3d(D3,color=colors, main="3D Scatterplot",xlab="x",ylab="y",zlab="z")
 ```
 
 We can run tSNE on this dataset and try to condense the data down from a three-dimensional to a two-dimensional representation. Unlike PCA, which has no real free parameters, tSNE has a variety of parameters that need to be set. First, we have the perplexity parameter which, in essence, balances local and global aspects of the data. For low values of perplexity, the algorithm will tend to entirely focus on keeping datapoints locally together.
 
 ```{r echo=T}
-tsne_model_1 <- Rtsne(as.matrix(D3), check_duplicates=FALSE, pca=TRUE, perplexity=10, theta=0.5, dims=2)
-y1 <- tsne_model_1$Y[which(D[1,]==-1),1:2]
-tsne_model_1 <- Rtsne(as.matrix(D3), check_duplicates=FALSE, pca=TRUE, perplexity=10, theta=0.5, dims=2)
+tsne_model_1 <- Rtsne(D3, check_duplicates=FALSE, pca=TRUE, perplexity=10, theta=0.5, dims=2)
 
-plot(tsne_model_1$Y[1:100,1:2],type="p",col="red",xlim=c(-45, 45),ylim=c(-45, 45),xlab="tSNE1",ylab="tSNE1")
-points(tsne_model_1$Y[101:200,1:2],type="p",col="blue")
+tsne_model_1$Y %>% 
+  as.data.frame() %>% 
+  rename(tSNE1=V1,  tSNE2=V2) %>% 
+  mutate( samples=c(rep('D1', 100), rep('D2', 100) ) )%>% 
+  ggplot() +
+  geom_point( mapping = aes(x=tSNE1, y=tSNE2, color=samples), alpha=0.5) +
+  scale_color_manual(values=c('red', 'blue')) +
+  scale_x_continuous( limits = c(-55, 55)) +
+  scale_y_continuous( limits = c(-55, 55)) +
+  theme_classic() 
 ```
 
 Note that here we have set the perplexity parameter reasonably low, and tSNE appears to have identified a lot of local structure that (we know) doesn't exist. Let's try again using a larger value for the perplexity parameter. 
 
 ```{r echo=T}
-y1 <- tsne_model_1$Y[which(D[1,]==-1),1:2]
-tsne_model_1 <- Rtsne(as.matrix(D3), check_duplicates=FALSE, pca=TRUE, perplexity=50, theta=0.5, dims=2)
+tsne_model_1 <- Rtsne(D3, check_duplicates=FALSE, pca=TRUE, perplexity=50, theta=0.5, dims=2)
 
-plot(tsne_model_1$Y[1:100,1:2],type="p",col="red",xlim=c(-45, 45),ylim=c(-45, 45),xlab="tSNE1",ylab="tSNE2")
-points(tsne_model_1$Y[101:200,1:2],type="p",col="blue")
+p <- tsne_model_1$Y %>% 
+  as.data.frame() %>% 
+  rename(tSNE1=V1,  tSNE2=V2) %>% 
+  mutate( samples=c(rep('D1', 100), rep('D2', 100) ) )%>% 
+  ggplot() +
+  geom_point( mapping = aes(x=tSNE1, y=tSNE2, color=samples), alpha=0.5) +
+  scale_color_manual(values=c('red', 'blue')) +
+  scale_x_continuous( limits = c(-55, 55)) +
+  scale_y_continuous( limits = c(-55, 55)) +
+  theme_classic()
+
+print(p)
 ```
 
 This appears to have done a better job of representing the data in a two-dimensional space. 
-### Nonlinear warping 
+
+### Nonlinear warping  
 
 In our previous example we showed that if the perplexity parameter was correctly set, tSNE seperated out the two populations very well. If we plot the original data next to the tSNE reduced dimensionality represention, however, we will notice something interesting:
 
 ```{r echo=T}
-par(mfrow=c(1,2))
 scatterplot3d(D3,color=colors, main="3D Scatterplot",xlab="x",ylab="y",zlab="z")
-plot(tsne_model_1$Y[1:100,1:2],type="p",col="red",xlim=c(-45, 45),ylim=c(-45, 45),xlab="tSNE1", ylab="tSNE2")
-points(tsne_model_1$Y[101:200,1:2],type="p",col="blue")
+print(p)
 ```
 
 Whilst in the origianl data the two groups had very different variances, in the reduced dimensionality representation they appeared to show a similar spread. This is down to tSNEs ability to represent nonlinearities, and the algorithm performs different transformations on different regions. This is important to keep in mind: the spread in a tSNE output are not always indicative of the level of heterogeneity in the data.
@@ -339,17 +477,38 @@ A final important point to note is that tSNE is stochastic in nature. Unlike PCA
 
 ```{r echo=T}
 set.seed(123456)
+tsne_model_1 <- Rtsne(D3, check_duplicates=FALSE, pca=TRUE, perplexity=30, theta=0.5, dims=2)
 
-tsne_model_1 <- Rtsne(as.matrix(D3), check_duplicates=FALSE, pca=TRUE, perplexity=30, theta=0.5, dims=2)
+set.seed(0)
+tsne_model_2 <- Rtsne(D3, check_duplicates=FALSE, pca=TRUE, perplexity=30, theta=0.5, dims=2)
 
-tsne_model_2 <- Rtsne(as.matrix(D3), check_duplicates=FALSE, pca=TRUE, perplexity=30, theta=0.5, dims=2)
+p1 <- tsne_model_1$Y %>% 
+  as.data.frame() %>% 
+  rename(tSNE1=V1,  tSNE2=V2) %>% 
+  mutate( samples=c(rep('D1', 100), rep('D2', 100) ) )%>% 
+  ggplot() +
+  geom_point( mapping = aes(x=tSNE1, y=tSNE2, color=samples), alpha=0.5) +
+  scale_color_manual(values=c('red', 'blue')) +
+  scale_x_continuous( limits = c(-55, 55)) +
+  scale_y_continuous( limits = c(-55, 55)) +
+  theme_classic()
 
-par(mfrow=c(1,2))
-plot(tsne_model_1$Y[1:100,1:2],type="p",col="red",xlim=c(-45, 45),ylim=c(-45, 45),xlab="tSNE1",ylab="tSNE2")
-points(tsne_model_1$Y[101:200,1:2],type="p",col="blue")
+p2 <- tsne_model_2$Y %>% 
+  as.data.frame() %>% 
+  rename(tSNE1=V1,  tSNE2=V2) %>% 
+  mutate( samples=c(rep('D1', 100), rep('D2', 100) ) )%>% 
+  ggplot() +
+  geom_point( mapping = aes(x=tSNE1, y=tSNE2, color=samples), alpha=0.5) +
+  scale_color_manual(values=c('red', 'blue')) +
+  scale_x_continuous( limits = c(-55, 55)) +
+  scale_y_continuous( limits = c(-55, 55)) +
+  theme_classic()
 
-plot(tsne_model_2$Y[1:100,1:2],type="p",col="red",xlim=c(-45, 45),ylim=c(-45, 45),xlab="tSNE1",ylab="tSNE2")
-points(tsne_model_2$Y[101:200,1:2],type="p",col="blue")
+
+plotList <- list(p1,p2)
+pm <- ggmatrix(plotList, nrow = 1, ncol=2)
+pm
+
 ```
 
 Note that this stochasticity, itself, may be a useful property, allowing us to gauge robustness of our biological interpretations. A comprehensive blog discussing the various pitfalls of tSNE is available [here](https://distill.pub/2016/misread-tsne/).
