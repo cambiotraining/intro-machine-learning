@@ -706,13 +706,7 @@ Figure 3.3: Example of early human development. Here we have measurements of cel
 <span id="cb15-15"><a href="dimensionality-reduction.html#cb15-15"></a><span class="st">  </span><span class="kw">as.matrix</span>()</span>
 <span id="cb15-16"><a href="dimensionality-reduction.html#cb15-16"></a></span>
 <span id="cb15-17"><a href="dimensionality-reduction.html#cb15-17"></a>genenames &lt;-<span class="st"> </span><span class="kw">rownames</span>(sc_rna_fil)</span>
-<span id="cb15-18"><a href="dimensionality-reduction.html#cb15-18"></a>pcaresult &lt;-<span class="st"> </span><span class="kw">prcomp</span>( <span class="kw">t</span>(sc_rna_fil)  , <span class="dt">center =</span> <span class="ot">TRUE</span>, <span class="dt">scale =</span> <span class="ot">FALSE</span>)</span>
-<span id="cb15-19"><a href="dimensionality-reduction.html#cb15-19"></a></span>
-<span id="cb15-20"><a href="dimensionality-reduction.html#cb15-20"></a><span class="kw">autoplot</span>( pcaresult, </span>
-<span id="cb15-21"><a href="dimensionality-reduction.html#cb15-21"></a>          <span class="dt">data=</span>metadata,</span>
-<span id="cb15-22"><a href="dimensionality-reduction.html#cb15-22"></a>          <span class="dt">colour=</span><span class="st">&#39;group&#39;</span></span>
-<span id="cb15-23"><a href="dimensionality-reduction.html#cb15-23"></a>          )</span></code></pre></div>
-<p><img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<span id="cb15-18"><a href="dimensionality-reduction.html#cb15-18"></a>pcaresult &lt;-<span class="st"> </span><span class="kw">prcomp</span>( <span class="kw">t</span>(sc_rna_fil)  , <span class="dt">center =</span> <span class="ot">TRUE</span>, <span class="dt">scale =</span> <span class="ot">FALSE</span>)</span></code></pre></div>
 <p>Here we have opted to centre the data, but have not normalised each gene to be zero-mean. This is beacuse we are dealing entirely with gene expression, rather than a variety of variables that may exist on different scales.</p>
 <p>We can plot the data as follows:</p>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="dimensionality-reduction.html#cb16-1"></a><span class="kw">autoplot</span>( pcaresult, </span>
@@ -751,7 +745,7 @@ Figure 3.3: Example of early human development. Here we have measurements of cel
 </div>
 <div id="exercise-2.3." class="section level2">
 <h2><span class="header-section-number">3.2</span> Exercise 2.3.</h2>
-<p>In our previous section we identified clusters associated with various groups. In our application cluster 1 was associated primarily with pre-implantation cells, with cluster 3 associated with PGCs. We could therefore empirically look for genes that are differentially expressed. Since we know SOX17 is associated with PGC specification in humans <span class="citation">(Irie et al. <a href="#ref-irie2015sox17" role="doc-biblioref">2015</a>, @tang2015unique)</span> let’s first compare the expression levels of SOX17 in the two groups:</p>
+<p>In our previous section we identified clusters associated with various groups. In our application cluster 2 was associated primarily with pre-implantation cells, with cluster 1 associated with PGCs. We could therefore empirically look for genes that are differentially expressed. Since we know SOX17 is associated with PGC specification in humans <span class="citation">(Irie et al. <a href="#ref-irie2015sox17" role="doc-biblioref">2015</a>, @tang2015unique)</span> let’s first compare the expression levels of SOX17 in the two groups:</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="dimensionality-reduction.html#cb20-1"></a><span class="co"># SOX17  gene expression</span></span>
 <span id="cb20-2"><a href="dimensionality-reduction.html#cb20-2"></a>gene_exp &lt;-<span class="st"> </span>sc_rna_fil <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb20-3"><a href="dimensionality-reduction.html#cb20-3"></a><span class="st">  </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>

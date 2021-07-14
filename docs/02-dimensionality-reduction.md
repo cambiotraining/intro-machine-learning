@@ -281,14 +281,7 @@ sc_rna_fil <- sc_rna %>%
 
 genenames <- rownames(sc_rna_fil)
 pcaresult <- prcomp( t(sc_rna_fil)  , center = TRUE, scale = FALSE)
-
-autoplot( pcaresult, 
-          data=metadata,
-          colour='group'
-          )
 ```
-
-<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 
 Here we have opted to centre the data, but have not normalised each gene to be zero-mean. This is beacuse we are dealing entirely with gene expression, rather than a variety of variables that may exist on different scales. 
 
@@ -348,7 +341,7 @@ ggplot( data=sc_pc_tab, mapping = aes(x=PC1, y=PC2, color=group, shape  = kmean_
 
 ## Exercise 2.3.
 
-In our previous section we identified clusters associated with various groups. In our application cluster 1 was associated primarily with pre-implantation cells, with cluster 3 associated with PGCs. We could therefore empirically look for genes that are differentially expressed. Since we know SOX17 is associated with PGC specification in humans [@irie2015sox17,@tang2015unique] let's first compare the expression levels of SOX17 in the two groups:
+In our previous section we identified clusters associated with various groups. In our application cluster 2 was associated primarily with pre-implantation cells, with cluster 1 associated with PGCs. We could therefore empirically look for genes that are differentially expressed. Since we know SOX17 is associated with PGC specification in humans [@irie2015sox17,@tang2015unique] let's first compare the expression levels of SOX17 in the two groups:
 
 
 ```r
