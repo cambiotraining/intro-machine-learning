@@ -57,7 +57,7 @@ ggplot(data=sc_2d_data) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-3](15-solutions-dimensionality-reduction_files/figure-html/unnamed-chunk-3-1.png)
+<img src="15-solutions-dimensionality-reduction_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
 ## Exercise 2.6.
 
@@ -83,4 +83,4 @@ ggplot(data=sc_2d_preimp) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-4](15-solutions-dimensionality-reduction_files/figure-html/unnamed-chunk-4-1.png)
+<img src="15-solutions-dimensionality-reduction_files/figure-html/unnamed-chunk-4-1.png" width="672" />

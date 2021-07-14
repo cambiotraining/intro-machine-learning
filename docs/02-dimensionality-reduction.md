@@ -2,7 +2,10 @@
 
 In machine learning, dimensionality reduction refers broadly to any modelling approach that reduces the number of variables in a dataset to a few highly informative or representative ones (Figure \@ref(fig:dimreduc)). This is necessitated by the fact that large datasets with many variables are inherently difficult for humans to develop a clear intuition for. Dimensionality reduction is therefore an integral step in the analysis of large, complex (biological) datasets, allowing exploratory analyses and more intuitive visualisation that may aid interpretability, as well as forming a chain in the link of more complex analyses.
 
-<img src="images/swiss_roll_manifold_sculpting.png" title="Example of a dimensionality reduction. Here we have a two-dimensional dataset embeded in a three-dimensional space (swiss roll dataset)." alt="Example of a dimensionality reduction. Here we have a two-dimensional dataset embeded in a three-dimensional space (swiss roll dataset)." width="55%" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="images/swiss_roll_manifold_sculpting.png" alt="Example of a dimensionality reduction. Here we have a two-dimensional dataset embeded in a three-dimensional space (swiss roll dataset)." width="55%" />
+<p class="caption">(\#fig:dimreduc)Example of a dimensionality reduction. Here we have a two-dimensional dataset embeded in a three-dimensional space (swiss roll dataset).</p>
+</div>
 
 In biological applications, systems-level measurements are typically used to decipher complex mechanisms. These include measurements of gene expression from collections of microarrays [@Breeze873,@windram2012arabidopsis,@Lewis15,@Bechtold] or RNA-sequencing experiments [@irie2015sox17,@tang2015unique] that provide quantitative measurments for tens-of-thousands of genes. Studies like these, based on bulk measurements (that is pooled material), provide observations for many variables (in this case many genes) but with relatively few samples e.g., few time points or conditions. The imbalance between the number of variables and the number of observations is referred to as large *p*, small *n*, and makes statistical analysis difficult. Dimensionality reduction techniques therefore prove to be a useful first step in any analysis, identifying potential structure that exists in the dataset or highlighting which (combinations of) variables are the most informative.
 
@@ -10,7 +13,10 @@ The increasing prevalence of single cell RNA-sequencing (scRNA-seq) means the sc
 
 Of course, whilst dimensionality reduction allows humans to inspect the dataset manually, particularly when the data can be represented in two or three dimensions, we should keep in mind that humans are exceptionally good at identifying patterns in two or three dimensional data, even when no real structure exists (Figure \@ref(fig:humanpattern). It is therefore useful to employ other statistical approaches to search for patterns in the reduced dimensional space. In this sense, dimensionality reduction forms an integral component in the analysis of complex datasets that will typically be combined a variety of machine learning techniques, such as classification, regression, and clustering.
 
-<img src="images/GB1.jpg" title="Humans are exceptionally good at identifying patterns in two and three-dimensional spaces - sometimes too good. To illustrate this, note the Great Britain shapped cloud in the image (presumably drifting away from an EU shaped cloud, not shown). More whimsical shaped clouds can also be seen if you have a spare afternoon.  Golcar Matt/Weatherwatchers [BBC News](http://www.bbc.co.uk/news/uk-england-leeds-40287817)" alt="Humans are exceptionally good at identifying patterns in two and three-dimensional spaces - sometimes too good. To illustrate this, note the Great Britain shapped cloud in the image (presumably drifting away from an EU shaped cloud, not shown). More whimsical shaped clouds can also be seen if you have a spare afternoon.  Golcar Matt/Weatherwatchers [BBC News](http://www.bbc.co.uk/news/uk-england-leeds-40287817)" width="35%" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="images/GB1.jpg" alt="Humans are exceptionally good at identifying patterns in two and three-dimensional spaces - sometimes too good. To illustrate this, note the Great Britain shapped cloud in the image (presumably drifting away from an EU shaped cloud, not shown). More whimsical shaped clouds can also be seen if you have a spare afternoon.  Golcar Matt/Weatherwatchers [BBC News](http://www.bbc.co.uk/news/uk-england-leeds-40287817)" width="35%" />
+<p class="caption">(\#fig:humanpattern)Humans are exceptionally good at identifying patterns in two and three-dimensional spaces - sometimes too good. To illustrate this, note the Great Britain shapped cloud in the image (presumably drifting away from an EU shaped cloud, not shown). More whimsical shaped clouds can also be seen if you have a spare afternoon.  Golcar Matt/Weatherwatchers [BBC News](http://www.bbc.co.uk/news/uk-england-leeds-40287817)</p>
+</div>
 
 In this chapter we will explore two forms of dimensionality reduction: principle component analysis ([PCA](#linear-dimensionality-reduction)) and t-distributed stochastic neighbour embedding ([tSNE](#nonlinear-dimensionality-reduction)), highlighting the advantages and potential pitfalls of each method. As an illustrative example, we will use these approaches to analyse single cell RNA-sequencing data of early human development. Finally, we will illustrate the use of dimensionality redution on an image dataset.
 
@@ -45,7 +51,7 @@ ggplot( data=D_trnas, mapping = aes(x=GATA3, y=XBP1, color = ER))+
   geom_point() 
 ```
 
-![plot of chunk unnamed-chunk-569](02-dimensionality-reduction_files/figure-html/unnamed-chunk-569-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-2-1.png" width="672" />
 
 As this system is inherently low dimensional we can clearly see that ER status correlates with both *GATA3* and *XBP1* expression. We perform PCA in R using the \texttt{prcomp} function. To do so, we first filter out datapoints that have missing observations, as PCA does not, inherently, deal with missing observations. We will now run PCA using just the first two dimensions to understand what's going on:
 
@@ -77,7 +83,7 @@ ggplot(data=pca_data)  +
   geom_point( mapping = aes(x=PC1, y=PC2, color=ER) )
 ```
 
-![plot of chunk unnamed-chunk-570](02-dimensionality-reduction_files/figure-html/unnamed-chunk-570-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-3-1.png" width="672" />
 
 Note that the \texttt{prcomp} has the option to centre and scale the data. That is, to normalise each variable to have a zero-mean and unit variance. This is particularly important when dealing with variables that may exist over very different scales. For example, for ecological datasets we may have variables that were measured in seconds with others measured in hours. Without normalisation there would appear to be much greater variance in the variable measured in seconds, potentially skewing the results. In general, when dealing with variables that are measured on similar scales (for example gene expression) it is not desirable to normalise the data.
 
@@ -97,7 +103,7 @@ pm <- ggmatrix(plotList, nrow = 1, ncol=2)
 pm
 ```
 
-![plot of chunk unnamed-chunk-571](02-dimensionality-reduction_files/figure-html/unnamed-chunk-571-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-4-1.png" width="672" />
 
 We can seen that we have simply rotated the original data, so that the greatest variance aligns along the x-axis and so forth. We can find out how much of the variance each of the principle components explains by looking at \texttt{pca1$sdev}:
 
@@ -116,7 +122,7 @@ ggplot(data=pca_var) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-572](02-dimensionality-reduction_files/figure-html/unnamed-chunk-572-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-5-1.png" width="672" />
 
 PC1 explains the vast majority of the variance in the observations. The dimensionality reduction step of PCA occurs when we choose to discard the higher PCs. Of course, by doing so we loose some information about the system, but this may be an acceptable loss compared to the increased interpretability achieved by visualising the system in lower dimensions. In the example from [@ringner2008principal] we can visualise the data using only PC1.
 
@@ -135,7 +141,7 @@ ggplot( data=pca_data) +
   )
 ```
 
-![plot of chunk unnamed-chunk-573](02-dimensionality-reduction_files/figure-html/unnamed-chunk-573-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-6-1.png" width="672" />
 
 So reducing the system down to one dimension appears to have done a good job at separating out the ER$^+$ cells from the ER$^-$ cells, suggesting that it may be of biological use. Precisely how many PCs to retain remains subjective. For visualisation purposed, it is typical to look at the first two or three only. However, when using PCA as an intermediate step within more complex workflows, more PCs are often retained e.g., by thresholding to a suitable level of explanatory variance.
 
@@ -157,7 +163,7 @@ ggplot( data=scores_df, mapping = aes(x=PC1, y=PC2)) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-574](02-dimensionality-reduction_files/figure-html/unnamed-chunk-574-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-7-1.png" width="672" />
 
 ```r
 ## loading plot
@@ -177,7 +183,7 @@ ggplot(data=loadings_df, mapping = aes(x=PC1, y=PC2)) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-574](02-dimensionality-reduction_files/figure-html/unnamed-chunk-574-2.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-7-2.png" width="672" />
 
 ```r
 ## biplot
@@ -188,7 +194,7 @@ autoplot(pca1, loadings = TRUE,
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-574](02-dimensionality-reduction_files/figure-html/unnamed-chunk-574-3.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-7-3.png" width="672" />
 
 In this particular case, we can see that both genes appear to be reasonably strongly associated with PC1. When dealing with much larger systems e.g., with more genes, we can, of course, project the original axes into the reduced dimensional space. In general this is particularly useful for identifying genes associated with particular PCs, and ultimately assigning a biological interpretation to the PCs.
 
@@ -226,7 +232,7 @@ ggplot( data=hs_tab) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-576](02-dimensionality-reduction_files/figure-html/unnamed-chunk-576-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-9-1.png" width="672" />
 
 By eye, we see that the data can be separated out by a single direction: that is, we can order the data from time/condition 1 through to time/condition 10. Intuitively, then, the data can be represented by a single dimension. Let's run PCA as we would normally, and visualise the result, plotting the first two PCs:
 
@@ -238,7 +244,7 @@ autoplot(pca2, label=T, padding = 1, label.repel = T) +
   theme_classic()
 ```
 
-![plot of chunk unnamed-chunk-577](02-dimensionality-reduction_files/figure-html/unnamed-chunk-577-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-10-1.png" width="672" />
 
 We see that the PCA plot has placed the datapoints in a horseshoe shape, with gene 1 becoming closer to gene 8. From the earlier plots of gene expression profiles we can see that the relationships between the various genes are not entirely straightforward. For example, gene 1 is initially correlated with gene 2, then negatively correlated, and finally uncorrelated, whilst no correlation exists between gene 1 and genes 5 - 8. These nonlinearities make it difficult for PCA which, in general, attempts to preserve large pairwise distances, leading to the well known horseshoe effect [@novembre2008interpreting,@reich2008principal]. These types of artefacts may be problematic when trying to interpret data, and due care must be given when these type of effects are seen.
 
@@ -246,7 +252,10 @@ We see that the PCA plot has placed the datapoints in a horseshoe shape, with ge
 
 Now that we have a feel for PCA and understand some of the basic commands we can apply it in a real setting. Here we will make use of preprocessed data taken from [@yan2013single] (GEO  GSE36552) and [@guo2015transcriptome] (GEO GSE63818). The data from [@yan2013single] represents single cell RNA-seq measurements from human embryos from the zygote stage (a single cell produced following fertilisation of an egg) through to the blastocyst stage (an embryo consisting of around 64 cells), as well as human embryonic stem cells (hESC; cells extracted from an early blsatocyst stage embryo and maintained *in vitro*). The dataset of [@guo2015transcriptome] contains scRNA-seq data from human primordial germ cells (hPGCs), precursors of sperm or eggs that are specified early in the developing human embryo soon after implantation (around week 2-3 in humans), and somatic cells. Together, these datasets provide useful insights into early human development, and possible mechanisms for the specification of early cell types, such as PGCs. 
 
-<img src="images/PGCs.png" title="Example of early human development. Here we have measurements of cells from preimplantation embryos, embryonic stem cells, and from post-implantation primordial germ cells and somatic tissues." alt="Example of early human development. Here we have measurements of cells from preimplantation embryos, embryonic stem cells, and from post-implantation primordial germ cells and somatic tissues." width="55%" style="display: block; margin: auto;" />
+<div class="figure" style="text-align: center">
+<img src="images/PGCs.png" alt="Example of early human development. Here we have measurements of cells from preimplantation embryos, embryonic stem cells, and from post-implantation primordial germ cells and somatic tissues." width="55%" />
+<p class="caption">(\#fig:pgcs)Example of early human development. Here we have measurements of cells from preimplantation embryos, embryonic stem cells, and from post-implantation primordial germ cells and somatic tissues.</p>
+</div>
 
 Preprocessed data contains $\log_2$ normalised counts for around $400$ cells using $2957$ marker genes can be found in the file \texttt{/data/PGC_transcriptomics/PGC_transcriptomics.csv}. Note that the first line of data in the file is an indicator denoting cell type (-1 = ESC, 0 = pre-implantation, 1 = PGC, and 2 = somatic cell). The second row indicates the sex of the cell (0 = unknown/unlabelled, 1 = XX, 2 = XY), with the third row indicating capture time (-1 = ESC, 0 - 7 denotes various developmental stages from zygote to blastocyst, 8 - 13 indicates increasing times of embryo development from week 4 through to week 19).
 
@@ -279,7 +288,7 @@ autoplot( pcaresult,
           )
 ```
 
-![plot of chunk unnamed-chunk-578](02-dimensionality-reduction_files/figure-html/unnamed-chunk-578-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-11-1.png" width="672" />
 
 Here we have opted to centre the data, but have not normalised each gene to be zero-mean. This is beacuse we are dealing entirely with gene expression, rather than a variety of variables that may exist on different scales. 
 
@@ -294,7 +303,7 @@ autoplot( pcaresult,
           )
 ```
 
-![plot of chunk unnamed-chunk-579](02-dimensionality-reduction_files/figure-html/unnamed-chunk-579-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-12-1.png" width="672" />
 
 From the plot, we can see PCA has done a reasonable job of separating out various cells. For example, a cluster of PGCs appears at the top of the plot, with somatic cells towards the lower right hand side. Pre-implantation embryos and ESCs appear to cluster together: perhaps this is not surprising as ESCs are derived from blastocyst cells. Loosely, we can interpret PC1 as dividing pre-implantation cells from somatic cells, with PC2 separating out PGCs.
 
@@ -334,7 +343,7 @@ ggplot( data=sc_pc_tab, mapping = aes(x=PC1, y=PC2, color=group, shape  = kmean_
   geom_point()
 ```
 
-![plot of chunk unnamed-chunk-580](02-dimensionality-reduction_files/figure-html/unnamed-chunk-580-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-13-1.png" width="672" />
 
 
 ## Exercise 2.3.
@@ -426,7 +435,7 @@ ggplot(data=pca_rot) +
   geom_text( mapping = aes( x=PC1, y=PC2, label  = gene), size=1) 
 ```
 
-![plot of chunk unnamed-chunk-583](02-dimensionality-reduction_files/figure-html/unnamed-chunk-583-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-16-1.png" width="672" />
 
 Okay, this plot is a little busy, so let's focus in on a particular region. Recall that PGCs seemed to lie towards the upper section of the plot (that is PC2 separated out PGCs from other cell types), so we'll take a look at the top section:
 
@@ -437,7 +446,7 @@ ggplot(data=pca_rot) +
   scale_y_continuous( limits = c(0.04,0.1))
 ```
 
-![plot of chunk unnamed-chunk-584](02-dimensionality-reduction_files/figure-html/unnamed-chunk-584-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-17-1.png" width="672" />
 
 We now see a number of genes that are potentially associated with PGCs. These include a number of known PGCs, for example, both SOX17 and PRDM1 (which can be found at co-ordinates PC1=0, PC2= 0.04) represent two key specifiers of human PGC fate [@irie2015sox17,@tang2015unique,@kobayashi2017principles]. We further note a number of other key regulators, such as DAZL, have been implicated in germ cell development, with DAZL over expressed ESCs forming spermatogonia-like colonies in a rare instance upon xenotransplantation [@panula2016over].
 
@@ -451,7 +460,7 @@ ggplot(data=pca_rot) +
   scale_x_continuous( limits=c(0,0.07))
 ```
 
-![plot of chunk unnamed-chunk-585](02-dimensionality-reduction_files/figure-html/unnamed-chunk-585-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-18-1.png" width="672" />
 
 This appears to identify a number of genes associated with embryogenesis, for example, DPPA3, which encodes for a maternally inherited factor, Stella, required for normal pre-implantation development [@bortvin2004dppa3,@payer2003stella] as well as regulation of transcriptional and endogenous retrovirus programs during maternal-to-zygotic transition [@Huang2017stella].
 
@@ -498,7 +507,7 @@ colors <- c(rep('red', 100), rep('blue', 100))
 scatterplot3d(D3,color=colors, main="3D Scatterplot",xlab="x",ylab="y",zlab="z")
 ```
 
-![plot of chunk unnamed-chunk-587](02-dimensionality-reduction_files/figure-html/unnamed-chunk-587-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-20-1.png" width="672" />
 
 We can run tSNE on this dataset and try to condense the data down from a three-dimensional to a two-dimensional representation. Unlike PCA, which has no real free parameters, tSNE has a variety of parameters that need to be set. First, we have the perplexity parameter which, in essence, balances local and global aspects of the data. For low values of perplexity, the algorithm will tend to entirely focus on keeping datapoints locally together.
 
@@ -518,7 +527,7 @@ tsne_model_1$Y %>%
   theme_classic() 
 ```
 
-![plot of chunk unnamed-chunk-588](02-dimensionality-reduction_files/figure-html/unnamed-chunk-588-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-21-1.png" width="672" />
 
 Note that here we have set the perplexity parameter reasonably low, and tSNE appears to have identified a lot of local structure that (we know) doesn't exist. Let's try again using a larger value for the perplexity parameter. 
 
@@ -540,7 +549,7 @@ p <- tsne_model_1$Y %>%
 print(p)
 ```
 
-![plot of chunk unnamed-chunk-589](02-dimensionality-reduction_files/figure-html/unnamed-chunk-589-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-22-1.png" width="672" />
 
 This appears to have done a better job of representing the data in a two-dimensional space. 
 
@@ -553,13 +562,13 @@ In our previous example we showed that if the perplexity parameter was correctly
 scatterplot3d(D3,color=colors, main="3D Scatterplot",xlab="x",ylab="y",zlab="z")
 ```
 
-![plot of chunk unnamed-chunk-590](02-dimensionality-reduction_files/figure-html/unnamed-chunk-590-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-23-1.png" width="672" />
 
 ```r
 print(p)
 ```
 
-![plot of chunk unnamed-chunk-590](02-dimensionality-reduction_files/figure-html/unnamed-chunk-590-2.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-23-2.png" width="672" />
 
 Whilst in the origianl data the two groups had very different variances, in the reduced dimensionality representation they appeared to show a similar spread. This is down to tSNEs ability to represent nonlinearities, and the algorithm performs different transformations on different regions. This is important to keep in mind: the spread in a tSNE output are not always indicative of the level of heterogeneity in the data.
 
@@ -603,7 +612,7 @@ pm <- ggmatrix(plotList, nrow = 1, ncol=2)
 pm
 ```
 
-![plot of chunk unnamed-chunk-591](02-dimensionality-reduction_files/figure-html/unnamed-chunk-591-1.png)
+<img src="02-dimensionality-reduction_files/figure-html/unnamed-chunk-24-1.png" width="672" />
 
 Note that this stochasticity, itself, may be a useful property, allowing us to gauge robustness of our biological interpretations. A comprehensive blog discussing the various pitfalls of tSNE is available [here](https://distill.pub/2016/misread-tsne/).
 

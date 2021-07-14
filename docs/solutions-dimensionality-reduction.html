@@ -6,12 +6,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>B Solutions ch. 2 - Dimensionality reduction | An Introduction to Machine Learning</title>
   <meta name="description" content="Course materials for An Introduction to Machine Learning" />
-  <meta name="generator" content="bookdown 0.20 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
 
   <meta property="og:title" content="B Solutions ch. 2 - Dimensionality reduction | An Introduction to Machine Learning" />
   <meta property="og:type" content="book" />
   
-  <meta property="og:image" content="figures/cover_image.png" />
+  <meta property="og:image" content="/figures/cover_image.png" />
   <meta property="og:description" content="Course materials for An Introduction to Machine Learning" />
   <meta name="github-repo" content="bioinformatics-training/intro-machine-learning-2019" />
 
@@ -19,7 +19,7 @@
   <meta name="twitter:title" content="B Solutions ch. 2 - Dimensionality reduction | An Introduction to Machine Learning" />
   
   <meta name="twitter:description" content="Course materials for An Introduction to Machine Learning" />
-  <meta name="twitter:image" content="figures/cover_image.png" />
+  <meta name="twitter:image" content="/figures/cover_image.png" />
 
 <meta name="author" content="Sudhakaran Prabakaran, Matt Wayland and Chris Penfold" />
 
@@ -50,12 +50,15 @@
 
 
 
+<script src="libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+code.sourceCode > span { display: inline-block; line-height: 1.25; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode { white-space: pre; position: relative; }
 pre.sourceCode { margin: 0; }
@@ -64,14 +67,16 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -80,9 +85,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -114,6 +119,7 @@ code span.va { color: #19177c; } /* Variable */
 code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
+
 
 </head>
 
@@ -149,48 +155,182 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="3.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#exercise-2.3."><i class="fa fa-check"></i><b>3.2</b> Exercise 2.3.</a></li>
 <li class="chapter" data-level="3.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#nonlinear-dimensionality-reduction"><i class="fa fa-check"></i><b>3.3</b> Nonlinear Dimensionality Reduction</a><ul>
-<li class="chapter" data-level="3.3.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#stochasticity"><i class="fa fa-check"></i><b>3.3.1</b> Stochasticity</a></li>
-<li class="chapter" data-level="3.3.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#analysis-of-mammalian-development"><i class="fa fa-check"></i><b>3.3.2</b> Analysis of mammalian development</a></li>
+<li class="chapter" data-level="3.3.1" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#nonlinear-warping"><i class="fa fa-check"></i><b>3.3.1</b> Nonlinear warping</a></li>
+<li class="chapter" data-level="3.3.2" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#stochasticity"><i class="fa fa-check"></i><b>3.3.2</b> Stochasticity</a></li>
+<li class="chapter" data-level="3.3.3" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#analysis-of-mammalian-development"><i class="fa fa-check"></i><b>3.3.3</b> Analysis of mammalian development</a></li>
 </ul></li>
 <li class="chapter" data-level="3.4" data-path="dimensionality-reduction.html"><a href="dimensionality-reduction.html#other-dimensionality-reduction-techniques"><i class="fa fa-check"></i><b>3.4</b> Other dimensionality reduction techniques</a></li>
 </ul></li>
 <li class="chapter" data-level="4" data-path="clustering.html"><a href="clustering.html"><i class="fa fa-check"></i><b>4</b> Clustering</a><ul>
 <li class="chapter" data-level="4.1" data-path="clustering.html"><a href="clustering.html#introduction"><i class="fa fa-check"></i><b>4.1</b> Introduction</a></li>
-<li class="chapter" data-level="4.2" data-path="clustering.html"><a href="clustering.html#distance-metrics"><i class="fa fa-check"></i><b>4.2</b> Distance metrics</a></li>
-<li class="chapter" data-level="4.3" data-path="clustering.html"><a href="clustering.html#hierarchic-agglomerative"><i class="fa fa-check"></i><b>4.3</b> Hierarchic agglomerative</a><ul>
-<li class="chapter" data-level="4.3.1" data-path="clustering.html"><a href="clustering.html#linkage-algorithms"><i class="fa fa-check"></i><b>4.3.1</b> Linkage algorithms</a></li>
+<li class="chapter" data-level="4.2" data-path="clustering.html"><a href="clustering.html#registered-s3-method-overwritten-by-ggally"><i class="fa fa-check"></i><b>4.2</b> Registered S3 method overwritten by ‘GGally’:</a></li>
+<li class="chapter" data-level="4.3" data-path="clustering.html"><a href="clustering.html#method-from"><i class="fa fa-check"></i><b>4.3</b> method from</a></li>
+<li class="chapter" data-level="4.4" data-path="clustering.html"><a href="clustering.html#gg-ggplot2"><i class="fa fa-check"></i><b>4.4</b> +.gg ggplot2</a></li>
+<li class="chapter" data-level="4.5" data-path="clustering.html"><a href="clustering.html#distance-metrics"><i class="fa fa-check"></i><b>4.5</b> Distance metrics</a></li>
+<li class="chapter" data-level="4.6" data-path="clustering.html"><a href="clustering.html#hierarchic-agglomerative"><i class="fa fa-check"></i><b>4.6</b> Hierarchic agglomerative</a><ul>
+<li class="chapter" data-level="4.6.1" data-path="clustering.html"><a href="clustering.html#linkage-algorithms"><i class="fa fa-check"></i><b>4.6.1</b> Linkage algorithms</a></li>
 </ul></li>
-<li class="chapter" data-level="4.4" data-path="clustering.html"><a href="clustering.html#k-means"><i class="fa fa-check"></i><b>4.4</b> K-means</a><ul>
-<li class="chapter" data-level="4.4.1" data-path="clustering.html"><a href="clustering.html#algorithm"><i class="fa fa-check"></i><b>4.4.1</b> Algorithm</a></li>
-<li class="chapter" data-level="4.4.2" data-path="clustering.html"><a href="clustering.html#choosing-initial-cluster-centres"><i class="fa fa-check"></i><b>4.4.2</b> Choosing initial cluster centres</a></li>
-<li class="chapter" data-level="4.4.3" data-path="clustering.html"><a href="clustering.html#choosingK"><i class="fa fa-check"></i><b>4.4.3</b> Choosing k</a></li>
+<li class="chapter" data-level="4.7" data-path="clustering.html"><a href="clustering.html#k-means"><i class="fa fa-check"></i><b>4.7</b> K-means</a><ul>
+<li class="chapter" data-level="4.7.1" data-path="clustering.html"><a href="clustering.html#algorithm"><i class="fa fa-check"></i><b>4.7.1</b> Algorithm</a></li>
+<li class="chapter" data-level="4.7.2" data-path="clustering.html"><a href="clustering.html#choosing-initial-cluster-centres"><i class="fa fa-check"></i><b>4.7.2</b> Choosing initial cluster centres</a></li>
+<li class="chapter" data-level="4.7.3" data-path="clustering.html"><a href="clustering.html#choosingK"><i class="fa fa-check"></i><b>4.7.3</b> Choosing k</a></li>
 </ul></li>
-<li class="chapter" data-level="4.5" data-path="clustering.html"><a href="clustering.html#dbscan"><i class="fa fa-check"></i><b>4.5</b> DBSCAN</a><ul>
-<li class="chapter" data-level="4.5.1" data-path="clustering.html"><a href="clustering.html#algorithm-1"><i class="fa fa-check"></i><b>4.5.1</b> Algorithm</a></li>
-<li class="chapter" data-level="4.5.2" data-path="clustering.html"><a href="clustering.html#implementation-in-r"><i class="fa fa-check"></i><b>4.5.2</b> Implementation in R</a></li>
-<li class="chapter" data-level="4.5.3" data-path="clustering.html"><a href="clustering.html#choosing-parameters"><i class="fa fa-check"></i><b>4.5.3</b> Choosing parameters</a></li>
+<li class="chapter" data-level="4.8" data-path="clustering.html"><a href="clustering.html#dbscan"><i class="fa fa-check"></i><b>4.8</b> DBSCAN</a><ul>
+<li class="chapter" data-level="4.8.1" data-path="clustering.html"><a href="clustering.html#algorithm-1"><i class="fa fa-check"></i><b>4.8.1</b> Algorithm</a></li>
+<li class="chapter" data-level="4.8.2" data-path="clustering.html"><a href="clustering.html#implementation-in-r"><i class="fa fa-check"></i><b>4.8.2</b> Implementation in R</a></li>
+<li class="chapter" data-level="4.8.3" data-path="clustering.html"><a href="clustering.html#choosing-parameters"><i class="fa fa-check"></i><b>4.8.3</b> Choosing parameters</a></li>
 </ul></li>
-<li class="chapter" data-level="4.6" data-path="clustering.html"><a href="clustering.html#example-clustering-synthetic-data-sets"><i class="fa fa-check"></i><b>4.6</b> Example: clustering synthetic data sets</a><ul>
-<li class="chapter" data-level="4.6.1" data-path="clustering.html"><a href="clustering.html#hierarchic-agglomerative-1"><i class="fa fa-check"></i><b>4.6.1</b> Hierarchic agglomerative</a></li>
-<li class="chapter" data-level="4.6.2" data-path="clustering.html"><a href="clustering.html#k-means-1"><i class="fa fa-check"></i><b>4.6.2</b> K-means</a></li>
-<li class="chapter" data-level="4.6.3" data-path="clustering.html"><a href="clustering.html#dbscan-1"><i class="fa fa-check"></i><b>4.6.3</b> DBSCAN</a></li>
+<li class="chapter" data-level="4.9" data-path="clustering.html"><a href="clustering.html#section"><i class="fa fa-check"></i><b>4.9</b> </a></li>
+<li class="chapter" data-level="4.10" data-path="clustering.html"><a href="clustering.html#section-1"><i class="fa fa-check"></i><b>4.10</b> 0 1 2 3</a></li>
+<li class="chapter" data-level="4.11" data-path="clustering.html"><a href="clustering.html#section-2"><i class="fa fa-check"></i><b>4.11</b> 43 484 486 487</a></li>
+<li class="chapter" data-level="4.12" data-path="clustering.html"><a href="clustering.html#example-clustering-synthetic-data-sets"><i class="fa fa-check"></i><b>4.12</b> Example: clustering synthetic data sets</a><ul>
+<li class="chapter" data-level="4.12.1" data-path="clustering.html"><a href="clustering.html#hierarchic-agglomerative-1"><i class="fa fa-check"></i><b>4.12.1</b> Hierarchic agglomerative</a></li>
 </ul></li>
-<li class="chapter" data-level="4.7" data-path="clustering.html"><a href="clustering.html#evaluating-cluster-quality"><i class="fa fa-check"></i><b>4.7</b> Evaluating cluster quality</a><ul>
-<li class="chapter" data-level="4.7.1" data-path="clustering.html"><a href="clustering.html#silhouetteMethod"><i class="fa fa-check"></i><b>4.7.1</b> Silhouette method</a></li>
-<li class="chapter" data-level="4.7.2" data-path="clustering.html"><a href="clustering.html#example---k-means-clustering-of-blobs-data-set"><i class="fa fa-check"></i><b>4.7.2</b> Example - k-means clustering of blobs data set</a></li>
-<li class="chapter" data-level="4.7.3" data-path="clustering.html"><a href="clustering.html#example---dbscan-clustering-of-noisy-moons"><i class="fa fa-check"></i><b>4.7.3</b> Example - DBSCAN clustering of noisy moons</a></li>
+<li class="chapter" data-level="4.13" data-path="clustering.html"><a href="clustering.html#section-3"><i class="fa fa-check"></i><b>4.13</b> </a></li>
+<li class="chapter" data-level="4.14" data-path="clustering.html"><a href="clustering.html#section-4"><i class="fa fa-check"></i><b>4.14</b> ———————</a></li>
+<li class="chapter" data-level="4.15" data-path="clustering.html"><a href="clustering.html#welcome-to-dendextend-version-1.13.4"><i class="fa fa-check"></i><b>4.15</b> Welcome to dendextend version 1.13.4</a></li>
+<li class="chapter" data-level="4.16" data-path="clustering.html"><a href="clustering.html#type-citationdendextend-for-how-to-cite-the-package."><i class="fa fa-check"></i><b>4.16</b> Type citation(‘dendextend’) for how to cite the package.</a></li>
+<li class="chapter" data-level="4.17" data-path="clustering.html"><a href="clustering.html#section-5"><i class="fa fa-check"></i><b>4.17</b> </a></li>
+<li class="chapter" data-level="4.18" data-path="clustering.html"><a href="clustering.html#type-browsevignettespackage-dendextend-for-the-package-vignette."><i class="fa fa-check"></i><b>4.18</b> Type browseVignettes(package = ‘dendextend’) for the package vignette.</a></li>
+<li class="chapter" data-level="4.19" data-path="clustering.html"><a href="clustering.html#the-github-page-is-httpsgithub.comtalgalilidendextend"><i class="fa fa-check"></i><b>4.19</b> The github page is: <span>https://github.com/talgalili/dendextend/</span></a></li>
+<li class="chapter" data-level="4.20" data-path="clustering.html"><a href="clustering.html#section-6"><i class="fa fa-check"></i><b>4.20</b> </a></li>
+<li class="chapter" data-level="4.21" data-path="clustering.html"><a href="clustering.html#suggestions-and-bug-reports-can-be-submitted-at-httpsgithub.comtalgalilidendextendissues"><i class="fa fa-check"></i><b>4.21</b> Suggestions and bug-reports can be submitted at: <span>https://github.com/talgalili/dendextend/issues</span></a></li>
+<li class="chapter" data-level="4.22" data-path="clustering.html"><a href="clustering.html#or-contact-tal.galiligmail.com"><i class="fa fa-check"></i><b>4.22</b> Or contact: <span>tal.galili@gmail.com</span></a></li>
+<li class="chapter" data-level="4.23" data-path="clustering.html"><a href="clustering.html#section-7"><i class="fa fa-check"></i><b>4.23</b> </a></li>
+<li class="chapter" data-level="4.24" data-path="clustering.html"><a href="clustering.html#to-suppress-this-message-use-suppresspackagestartupmessageslibrarydendextend"><i class="fa fa-check"></i><b>4.24</b> To suppress this message use: suppressPackageStartupMessages(library(dendextend))</a></li>
+<li class="chapter" data-level="4.25" data-path="clustering.html"><a href="clustering.html#section-8"><i class="fa fa-check"></i><b>4.25</b> ———————</a></li>
+<li class="chapter" data-level="4.26" data-path="clustering.html"><a href="clustering.html#section-9"><i class="fa fa-check"></i><b>4.26</b> </a></li>
+<li class="chapter" data-level="4.27" data-path="clustering.html"><a href="clustering.html#attaching-package-dendextend"><i class="fa fa-check"></i><b>4.27</b> Attaching package: ‘dendextend’</a></li>
+<li class="chapter" data-level="4.28" data-path="clustering.html"><a href="clustering.html#the-following-object-is-masked-from-packageggdendro"><i class="fa fa-check"></i><b>4.28</b> The following object is masked from ‘package:ggdendro’:</a></li>
+<li class="chapter" data-level="4.29" data-path="clustering.html"><a href="clustering.html#section-10"><i class="fa fa-check"></i><b>4.29</b> </a></li>
+<li class="chapter" data-level="4.30" data-path="clustering.html"><a href="clustering.html#theme_dendro"><i class="fa fa-check"></i><b>4.30</b> theme_dendro</a></li>
+<li class="chapter" data-level="4.31" data-path="clustering.html"><a href="clustering.html#the-following-object-is-masked-from-packagestats"><i class="fa fa-check"></i><b>4.31</b> The following object is masked from ‘package:stats’:</a></li>
+<li class="chapter" data-level="4.32" data-path="clustering.html"><a href="clustering.html#section-11"><i class="fa fa-check"></i><b>4.32</b> </a></li>
+<li class="chapter" data-level="4.33" data-path="clustering.html"><a href="clustering.html#cutree"><i class="fa fa-check"></i><b>4.33</b> cutree</a><ul>
+<li class="chapter" data-level="4.33.1" data-path="clustering.html"><a href="clustering.html#k-means-1"><i class="fa fa-check"></i><b>4.33.1</b> K-means</a></li>
 </ul></li>
-<li class="chapter" data-level="4.8" data-path="clustering.html"><a href="clustering.html#example-gene-expression-profiling-of-human-tissues"><i class="fa fa-check"></i><b>4.8</b> Example: gene expression profiling of human tissues</a><ul>
-<li class="chapter" data-level="4.8.1" data-path="clustering.html"><a href="clustering.html#hierarchic-agglomerative-2"><i class="fa fa-check"></i><b>4.8.1</b> Hierarchic agglomerative</a></li>
-<li class="chapter" data-level="4.8.2" data-path="clustering.html"><a href="clustering.html#k-means-2"><i class="fa fa-check"></i><b>4.8.2</b> K-means</a></li>
-<li class="chapter" data-level="4.8.3" data-path="clustering.html"><a href="clustering.html#dbscan-2"><i class="fa fa-check"></i><b>4.8.3</b> DBSCAN</a></li>
+<li class="chapter" data-level="4.34" data-path="clustering.html"><a href="clustering.html#warning-did-not-converge-in-10-iterations"><i class="fa fa-check"></i><b>4.34</b> Warning: did not converge in 10 iterations</a></li>
+<li class="chapter" data-level="4.35" data-path="clustering.html"><a href="clustering.html#warning-did-not-converge-in-10-iterations-1"><i class="fa fa-check"></i><b>4.35</b> Warning: did not converge in 10 iterations</a></li>
+<li class="chapter" data-level="4.36" data-path="clustering.html"><a href="clustering.html#warning-did-not-converge-in-10-iterations-2"><i class="fa fa-check"></i><b>4.36</b> Warning: did not converge in 10 iterations</a></li>
+<li class="chapter" data-level="4.37" data-path="clustering.html"><a href="clustering.html#warning-did-not-converge-in-10-iterations-3"><i class="fa fa-check"></i><b>4.37</b> Warning: did not converge in 10 iterations</a><ul>
+<li class="chapter" data-level="4.37.1" data-path="clustering.html"><a href="clustering.html#dbscan-1"><i class="fa fa-check"></i><b>4.37.1</b> DBSCAN</a></li>
 </ul></li>
-<li class="chapter" data-level="4.9" data-path="clustering.html"><a href="clustering.html#exercises"><i class="fa fa-check"></i><b>4.9</b> Exercises</a><ul>
-<li class="chapter" data-level="4.9.1" data-path="clustering.html"><a href="clustering.html#clusteringEx1"><i class="fa fa-check"></i><b>4.9.1</b> Exercise 1</a></li>
+<li class="chapter" data-level="4.38" data-path="clustering.html"><a href="clustering.html#section-12"><i class="fa fa-check"></i><b>4.38</b> </a></li>
+<li class="chapter" data-level="4.39" data-path="clustering.html"><a href="clustering.html#section-13"><i class="fa fa-check"></i><b>4.39</b> 0 1 2 3 4 5 6</a></li>
+<li class="chapter" data-level="4.40" data-path="clustering.html"><a href="clustering.html#section-14"><i class="fa fa-check"></i><b>4.40</b> 2 168 307 105 127 45 34</a></li>
+<li class="chapter" data-level="4.41" data-path="clustering.html"><a href="clustering.html#section-15"><i class="fa fa-check"></i><b>4.41</b> </a></li>
+<li class="chapter" data-level="4.42" data-path="clustering.html"><a href="clustering.html#section-16"><i class="fa fa-check"></i><b>4.42</b> 0 1 2</a></li>
+<li class="chapter" data-level="4.43" data-path="clustering.html"><a href="clustering.html#section-17"><i class="fa fa-check"></i><b>4.43</b> 8 748 744</a></li>
+<li class="chapter" data-level="4.44" data-path="clustering.html"><a href="clustering.html#section-18"><i class="fa fa-check"></i><b>4.44</b> </a></li>
+<li class="chapter" data-level="4.45" data-path="clustering.html"><a href="clustering.html#section-19"><i class="fa fa-check"></i><b>4.45</b> 0 1</a></li>
+<li class="chapter" data-level="4.46" data-path="clustering.html"><a href="clustering.html#section-20"><i class="fa fa-check"></i><b>4.46</b> 40 1460</a></li>
+<li class="chapter" data-level="4.47" data-path="clustering.html"><a href="clustering.html#section-21"><i class="fa fa-check"></i><b>4.47</b> </a></li>
+<li class="chapter" data-level="4.48" data-path="clustering.html"><a href="clustering.html#section-22"><i class="fa fa-check"></i><b>4.48</b> 0 1 2</a></li>
+<li class="chapter" data-level="4.49" data-path="clustering.html"><a href="clustering.html#section-23"><i class="fa fa-check"></i><b>4.49</b> 109 399 992</a></li>
+<li class="chapter" data-level="4.50" data-path="clustering.html"><a href="clustering.html#section-24"><i class="fa fa-check"></i><b>4.50</b> </a></li>
+<li class="chapter" data-level="4.51" data-path="clustering.html"><a href="clustering.html#section-25"><i class="fa fa-check"></i><b>4.51</b> 0 1 2 3</a></li>
+<li class="chapter" data-level="4.52" data-path="clustering.html"><a href="clustering.html#section-26"><i class="fa fa-check"></i><b>4.52</b> 29 489 488 494</a></li>
+<li class="chapter" data-level="4.53" data-path="clustering.html"><a href="clustering.html#section-27"><i class="fa fa-check"></i><b>4.53</b> </a></li>
+<li class="chapter" data-level="4.54" data-path="clustering.html"><a href="clustering.html#section-28"><i class="fa fa-check"></i><b>4.54</b> 1</a></li>
+<li class="chapter" data-level="4.55" data-path="clustering.html"><a href="clustering.html#section-29"><i class="fa fa-check"></i><b>4.55</b> 1500</a></li>
+<li class="chapter" data-level="4.56" data-path="clustering.html"><a href="clustering.html#evaluating-cluster-quality"><i class="fa fa-check"></i><b>4.56</b> Evaluating cluster quality</a><ul>
+<li class="chapter" data-level="4.56.1" data-path="clustering.html"><a href="clustering.html#silhouetteMethod"><i class="fa fa-check"></i><b>4.56.1</b> Silhouette method</a></li>
+<li class="chapter" data-level="4.56.2" data-path="clustering.html"><a href="clustering.html#example---k-means-clustering-of-blobs-data-set"><i class="fa fa-check"></i><b>4.56.2</b> Example - k-means clustering of blobs data set</a></li>
+<li class="chapter" data-level="4.56.3" data-path="clustering.html"><a href="clustering.html#example---dbscan-clustering-of-noisy-moons"><i class="fa fa-check"></i><b>4.56.3</b> Example - DBSCAN clustering of noisy moons</a></li>
 </ul></li>
+<li class="chapter" data-level="4.57" data-path="clustering.html"><a href="clustering.html#example-gene-expression-profiling-of-human-tissues"><i class="fa fa-check"></i><b>4.57</b> Example: gene expression profiling of human tissues</a><ul>
+<li class="chapter" data-level="4.57.1" data-path="clustering.html"><a href="clustering.html#hierarchic-agglomerative-2"><i class="fa fa-check"></i><b>4.57.1</b> Hierarchic agglomerative</a></li>
+</ul></li>
+<li class="chapter" data-level="4.58" data-path="clustering.html"><a href="clustering.html#tissue"><i class="fa fa-check"></i><b>4.58</b> tissue</a></li>
+<li class="chapter" data-level="4.59" data-path="clustering.html"><a href="clustering.html#cerebellum-colon-endometrium-hippocampus-kidney-liver"><i class="fa fa-check"></i><b>4.59</b> cerebellum colon endometrium hippocampus kidney liver</a></li>
+<li class="chapter" data-level="4.60" data-path="clustering.html"><a href="clustering.html#section-30"><i class="fa fa-check"></i><b>4.60</b> 38 34 15 31 39 26</a></li>
+<li class="chapter" data-level="4.61" data-path="clustering.html"><a href="clustering.html#placenta"><i class="fa fa-check"></i><b>4.61</b> placenta</a></li>
+<li class="chapter" data-level="4.62" data-path="clustering.html"><a href="clustering.html#section-31"><i class="fa fa-check"></i><b>4.62</b> 6</a></li>
+<li class="chapter" data-level="4.63" data-path="clustering.html"><a href="clustering.html#section-32"><i class="fa fa-check"></i><b>4.63</b> <span>1</span> 22215 189</a></li>
+<li class="chapter" data-level="4.64" data-path="clustering.html"><a href="clustering.html#cluster"><i class="fa fa-check"></i><b>4.64</b> cluster</a></li>
+<li class="chapter" data-level="4.65" data-path="clustering.html"><a href="clustering.html#tissue-1-2-3-4-5-6"><i class="fa fa-check"></i><b>4.65</b> tissue 1 2 3 4 5 6</a></li>
+<li class="chapter" data-level="4.66" data-path="clustering.html"><a href="clustering.html#cerebellum-0-36-0-0-2-0"><i class="fa fa-check"></i><b>4.66</b> cerebellum 0 36 0 0 2 0</a></li>
+<li class="chapter" data-level="4.67" data-path="clustering.html"><a href="clustering.html#colon-0-0-34-0-0-0"><i class="fa fa-check"></i><b>4.67</b> colon 0 0 34 0 0 0</a></li>
+<li class="chapter" data-level="4.68" data-path="clustering.html"><a href="clustering.html#endometrium-15-0-0-0-0-0"><i class="fa fa-check"></i><b>4.68</b> endometrium 15 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.69" data-path="clustering.html"><a href="clustering.html#hippocampus-0-31-0-0-0-0"><i class="fa fa-check"></i><b>4.69</b> hippocampus 0 31 0 0 0 0</a></li>
+<li class="chapter" data-level="4.70" data-path="clustering.html"><a href="clustering.html#kidney-37-0-0-0-2-0"><i class="fa fa-check"></i><b>4.70</b> kidney 37 0 0 0 2 0</a></li>
+<li class="chapter" data-level="4.71" data-path="clustering.html"><a href="clustering.html#liver-0-0-0-24-2-0"><i class="fa fa-check"></i><b>4.71</b> liver 0 0 0 24 2 0</a></li>
+<li class="chapter" data-level="4.72" data-path="clustering.html"><a href="clustering.html#placenta-0-0-0-0-0-6"><i class="fa fa-check"></i><b>4.72</b> placenta 0 0 0 0 0 6</a></li>
+<li class="chapter" data-level="4.73" data-path="clustering.html"><a href="clustering.html#cluster-1"><i class="fa fa-check"></i><b>4.73</b> cluster</a></li>
+<li class="chapter" data-level="4.74" data-path="clustering.html"><a href="clustering.html#tissue-1-2-3-4-5-6-7-8"><i class="fa fa-check"></i><b>4.74</b> tissue 1 2 3 4 5 6 7 8</a></li>
+<li class="chapter" data-level="4.75" data-path="clustering.html"><a href="clustering.html#cerebellum-0-31-0-0-2-0-5-0"><i class="fa fa-check"></i><b>4.75</b> cerebellum 0 31 0 0 2 0 5 0</a></li>
+<li class="chapter" data-level="4.76" data-path="clustering.html"><a href="clustering.html#colon-0-0-34-0-0-0-0-0"><i class="fa fa-check"></i><b>4.76</b> colon 0 0 34 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.77" data-path="clustering.html"><a href="clustering.html#endometrium-0-0-0-0-0-15-0-0"><i class="fa fa-check"></i><b>4.77</b> endometrium 0 0 0 0 0 15 0 0</a></li>
+<li class="chapter" data-level="4.78" data-path="clustering.html"><a href="clustering.html#hippocampus-0-31-0-0-0-0-0-0"><i class="fa fa-check"></i><b>4.78</b> hippocampus 0 31 0 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.79" data-path="clustering.html"><a href="clustering.html#kidney-37-0-0-0-2-0-0-0"><i class="fa fa-check"></i><b>4.79</b> kidney 37 0 0 0 2 0 0 0</a></li>
+<li class="chapter" data-level="4.80" data-path="clustering.html"><a href="clustering.html#liver-0-0-0-24-2-0-0-0"><i class="fa fa-check"></i><b>4.80</b> liver 0 0 0 24 2 0 0 0</a></li>
+<li class="chapter" data-level="4.81" data-path="clustering.html"><a href="clustering.html#placenta-0-0-0-0-0-0-0-6"><i class="fa fa-check"></i><b>4.81</b> placenta 0 0 0 0 0 0 0 6</a></li>
+<li class="chapter" data-level="4.82" data-path="clustering.html"><a href="clustering.html#section-33"><i class="fa fa-check"></i><b>4.82</b> </a></li>
+<li class="chapter" data-level="4.83" data-path="clustering.html"><a href="clustering.html#attaching-package-gplots"><i class="fa fa-check"></i><b>4.83</b> Attaching package: ‘gplots’</a></li>
+<li class="chapter" data-level="4.84" data-path="clustering.html"><a href="clustering.html#the-following-object-is-masked-from-packagestats-1"><i class="fa fa-check"></i><b>4.84</b> The following object is masked from ‘package:stats’:</a></li>
+<li class="chapter" data-level="4.85" data-path="clustering.html"><a href="clustering.html#section-34"><i class="fa fa-check"></i><b>4.85</b> </a></li>
+<li class="chapter" data-level="4.86" data-path="clustering.html"><a href="clustering.html#lowess"><i class="fa fa-check"></i><b>4.86</b> lowess</a><ul>
+<li class="chapter" data-level="4.86.1" data-path="clustering.html"><a href="clustering.html#k-means-2"><i class="fa fa-check"></i><b>4.86.1</b> K-means</a></li>
+</ul></li>
+<li class="chapter" data-level="4.87" data-path="clustering.html"><a href="clustering.html#tissue-1"><i class="fa fa-check"></i><b>4.87</b> tissue</a></li>
+<li class="chapter" data-level="4.88" data-path="clustering.html"><a href="clustering.html#cerebellum-colon-endometrium-hippocampus-kidney-liver-1"><i class="fa fa-check"></i><b>4.88</b> cerebellum colon endometrium hippocampus kidney liver</a></li>
+<li class="chapter" data-level="4.89" data-path="clustering.html"><a href="clustering.html#section-35"><i class="fa fa-check"></i><b>4.89</b> 38 34 15 31 39 26</a></li>
+<li class="chapter" data-level="4.90" data-path="clustering.html"><a href="clustering.html#placenta-1"><i class="fa fa-check"></i><b>4.90</b> placenta</a></li>
+<li class="chapter" data-level="4.91" data-path="clustering.html"><a href="clustering.html#section-36"><i class="fa fa-check"></i><b>4.91</b> 6</a></li>
+<li class="chapter" data-level="4.92" data-path="clustering.html"><a href="clustering.html#section-37"><i class="fa fa-check"></i><b>4.92</b> <span>1</span> 22215 189</a></li>
+<li class="chapter" data-level="4.93" data-path="clustering.html"><a href="clustering.html#loading-required-package-foreach"><i class="fa fa-check"></i><b>4.93</b> Loading required package: foreach</a></li>
+<li class="chapter" data-level="4.94" data-path="clustering.html"><a href="clustering.html#loading-required-package-iterators"><i class="fa fa-check"></i><b>4.94</b> Loading required package: iterators</a></li>
+<li class="chapter" data-level="4.95" data-path="clustering.html"><a href="clustering.html#loading-required-package-parallel"><i class="fa fa-check"></i><b>4.95</b> Loading required package: parallel</a></li>
+<li class="chapter" data-level="4.96" data-path="clustering.html"><a href="clustering.html#section-38"><i class="fa fa-check"></i><b>4.96</b> <span>1</span> 8</a></li>
+<li class="chapter" data-level="4.97" data-path="clustering.html"><a href="clustering.html#section-39"><i class="fa fa-check"></i><b>4.97</b> </a></li>
+<li class="chapter" data-level="4.98" data-path="clustering.html"><a href="clustering.html#tissue-1-2-3-4-5-6-7"><i class="fa fa-check"></i><b>4.98</b> tissue 1 2 3 4 5 6 7</a></li>
+<li class="chapter" data-level="4.99" data-path="clustering.html"><a href="clustering.html#cerebellum-33-5-0-0-0-0-0"><i class="fa fa-check"></i><b>4.99</b> cerebellum 33 5 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.100" data-path="clustering.html"><a href="clustering.html#colon-0-0-0-0-0-34-0"><i class="fa fa-check"></i><b>4.100</b> colon 0 0 0 0 0 34 0</a></li>
+<li class="chapter" data-level="4.101" data-path="clustering.html"><a href="clustering.html#endometrium-0-0-15-0-0-0-0"><i class="fa fa-check"></i><b>4.101</b> endometrium 0 0 15 0 0 0 0</a></li>
+<li class="chapter" data-level="4.102" data-path="clustering.html"><a href="clustering.html#hippocampus-0-31-0-0-0-0-0"><i class="fa fa-check"></i><b>4.102</b> hippocampus 0 31 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.103" data-path="clustering.html"><a href="clustering.html#kidney-0-0-0-39-0-0-0"><i class="fa fa-check"></i><b>4.103</b> kidney 0 0 0 39 0 0 0</a></li>
+<li class="chapter" data-level="4.104" data-path="clustering.html"><a href="clustering.html#liver-0-0-0-0-26-0-0"><i class="fa fa-check"></i><b>4.104</b> liver 0 0 0 0 26 0 0</a></li>
+<li class="chapter" data-level="4.105" data-path="clustering.html"><a href="clustering.html#placenta-0-0-0-0-0-0-6"><i class="fa fa-check"></i><b>4.105</b> placenta 0 0 0 0 0 0 6</a></li>
+<li class="chapter" data-level="4.106" data-path="clustering.html"><a href="clustering.html#section-40"><i class="fa fa-check"></i><b>4.106</b> </a></li>
+<li class="chapter" data-level="4.107" data-path="clustering.html"><a href="clustering.html#tissue-1-2-3-4-5-6-7-1"><i class="fa fa-check"></i><b>4.107</b> tissue 1 2 3 4 5 6 7</a></li>
+<li class="chapter" data-level="4.108" data-path="clustering.html"><a href="clustering.html#cerebellum-33-5-0-0-0-0-0-1"><i class="fa fa-check"></i><b>4.108</b> cerebellum 33 5 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.109" data-path="clustering.html"><a href="clustering.html#colon-0-0-0-0-0-34-0-1"><i class="fa fa-check"></i><b>4.109</b> colon 0 0 0 0 0 34 0</a></li>
+<li class="chapter" data-level="4.110" data-path="clustering.html"><a href="clustering.html#endometrium-0-0-15-0-0-0-0-1"><i class="fa fa-check"></i><b>4.110</b> endometrium 0 0 15 0 0 0 0</a></li>
+<li class="chapter" data-level="4.111" data-path="clustering.html"><a href="clustering.html#hippocampus-0-31-0-0-0-0-0-1"><i class="fa fa-check"></i><b>4.111</b> hippocampus 0 31 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.112" data-path="clustering.html"><a href="clustering.html#kidney-0-0-0-39-0-0-0-1"><i class="fa fa-check"></i><b>4.112</b> kidney 0 0 0 39 0 0 0</a></li>
+<li class="chapter" data-level="4.113" data-path="clustering.html"><a href="clustering.html#liver-0-0-0-0-26-0-0-1"><i class="fa fa-check"></i><b>4.113</b> liver 0 0 0 0 26 0 0</a></li>
+<li class="chapter" data-level="4.114" data-path="clustering.html"><a href="clustering.html#placenta-0-0-0-0-0-0-6-1"><i class="fa fa-check"></i><b>4.114</b> placenta 0 0 0 0 0 0 6</a><ul>
+<li class="chapter" data-level="4.114.1" data-path="clustering.html"><a href="clustering.html#dbscan-2"><i class="fa fa-check"></i><b>4.114.1</b> DBSCAN</a></li>
+</ul></li>
+<li class="chapter" data-level="4.115" data-path="clustering.html"><a href="clustering.html#tissue-2"><i class="fa fa-check"></i><b>4.115</b> tissue</a></li>
+<li class="chapter" data-level="4.116" data-path="clustering.html"><a href="clustering.html#cerebellum-colon-endometrium-hippocampus-kidney-liver-2"><i class="fa fa-check"></i><b>4.116</b> cerebellum colon endometrium hippocampus kidney liver</a></li>
+<li class="chapter" data-level="4.117" data-path="clustering.html"><a href="clustering.html#section-41"><i class="fa fa-check"></i><b>4.117</b> 38 34 15 31 39 26</a></li>
+<li class="chapter" data-level="4.118" data-path="clustering.html"><a href="clustering.html#placenta-2"><i class="fa fa-check"></i><b>4.118</b> placenta</a></li>
+<li class="chapter" data-level="4.119" data-path="clustering.html"><a href="clustering.html#section-42"><i class="fa fa-check"></i><b>4.119</b> 6</a></li>
+<li class="chapter" data-level="4.120" data-path="clustering.html"><a href="clustering.html#section-43"><i class="fa fa-check"></i><b>4.120</b> </a></li>
+<li class="chapter" data-level="4.121" data-path="clustering.html"><a href="clustering.html#section-44"><i class="fa fa-check"></i><b>4.121</b> 0 1 2 3 4 5 6</a></li>
+<li class="chapter" data-level="4.122" data-path="clustering.html"><a href="clustering.html#section-45"><i class="fa fa-check"></i><b>4.122</b> 12 37 62 34 24 15 5</a></li>
+<li class="chapter" data-level="4.123" data-path="clustering.html"><a href="clustering.html#section-46"><i class="fa fa-check"></i><b>4.123</b> </a></li>
+<li class="chapter" data-level="4.124" data-path="clustering.html"><a href="clustering.html#tissue-0-1-2-3-4-5-6"><i class="fa fa-check"></i><b>4.124</b> tissue 0 1 2 3 4 5 6</a></li>
+<li class="chapter" data-level="4.125" data-path="clustering.html"><a href="clustering.html#cerebellum-2-0-31-0-0-0-5"><i class="fa fa-check"></i><b>4.125</b> cerebellum 2 0 31 0 0 0 5</a></li>
+<li class="chapter" data-level="4.126" data-path="clustering.html"><a href="clustering.html#colon-0-0-0-34-0-0-0"><i class="fa fa-check"></i><b>4.126</b> colon 0 0 0 34 0 0 0</a></li>
+<li class="chapter" data-level="4.127" data-path="clustering.html"><a href="clustering.html#endometrium-0-0-0-0-0-15-0"><i class="fa fa-check"></i><b>4.127</b> endometrium 0 0 0 0 0 15 0</a></li>
+<li class="chapter" data-level="4.128" data-path="clustering.html"><a href="clustering.html#hippocampus-0-0-31-0-0-0-0"><i class="fa fa-check"></i><b>4.128</b> hippocampus 0 0 31 0 0 0 0</a></li>
+<li class="chapter" data-level="4.129" data-path="clustering.html"><a href="clustering.html#kidney-2-37-0-0-0-0-0"><i class="fa fa-check"></i><b>4.129</b> kidney 2 37 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.130" data-path="clustering.html"><a href="clustering.html#liver-2-0-0-0-24-0-0"><i class="fa fa-check"></i><b>4.130</b> liver 2 0 0 0 24 0 0</a></li>
+<li class="chapter" data-level="4.131" data-path="clustering.html"><a href="clustering.html#placenta-6-0-0-0-0-0-0"><i class="fa fa-check"></i><b>4.131</b> placenta 6 0 0 0 0 0 0</a></li>
+<li class="chapter" data-level="4.132" data-path="clustering.html"><a href="clustering.html#exercises"><i class="fa fa-check"></i><b>4.132</b> Exercises</a><ul>
+<li class="chapter" data-level="4.132.1" data-path="clustering.html"><a href="clustering.html#clusteringEx1"><i class="fa fa-check"></i><b>4.132.1</b> Exercise 1</a></li>
+</ul></li>
+<li class="chapter" data-level="4.133" data-path="clustering.html"><a href="clustering.html#section-47"><i class="fa fa-check"></i><b>4.133</b> </a></li>
+<li class="chapter" data-level="4.134" data-path="clustering.html"><a href="clustering.html#attaching-package-ebimage"><i class="fa fa-check"></i><b>4.134</b> Attaching package: ‘EBImage’</a></li>
+<li class="chapter" data-level="4.135" data-path="clustering.html"><a href="clustering.html#the-following-object-is-masked-from-packagedendextend"><i class="fa fa-check"></i><b>4.135</b> The following object is masked from ‘package:dendextend’:</a></li>
+<li class="chapter" data-level="4.136" data-path="clustering.html"><a href="clustering.html#section-48"><i class="fa fa-check"></i><b>4.136</b> </a></li>
+<li class="chapter" data-level="4.137" data-path="clustering.html"><a href="clustering.html#rotate"><i class="fa fa-check"></i><b>4.137</b> rotate</a></li>
+<li class="chapter" data-level="4.138" data-path="clustering.html"><a href="clustering.html#section-49"><i class="fa fa-check"></i><b>4.138</b> <span>1</span> 528 393 3</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html"><i class="fa fa-check"></i><b>5</b> Nearest neighbours</a><ul>
-<li class="chapter" data-level="5.1" data-path="clustering.html"><a href="clustering.html#introduction"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
+<li class="chapter" data-level="5.1" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#introduction-1"><i class="fa fa-check"></i><b>5.1</b> Introduction</a></li>
 <li class="chapter" data-level="5.2" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#classification-simulated-data"><i class="fa fa-check"></i><b>5.2</b> Classification: simulated data</a><ul>
 <li class="chapter" data-level="5.2.1" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#knn-function"><i class="fa fa-check"></i><b>5.2.1</b> knn function</a></li>
 <li class="chapter" data-level="5.2.2" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#plotting-decision-boundaries"><i class="fa fa-check"></i><b>5.2.2</b> Plotting decision boundaries</a></li>
@@ -210,19 +350,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="5.5.3" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#search-for-optimum-k"><i class="fa fa-check"></i><b>5.5.3</b> Search for optimum <em>k</em></a></li>
 <li class="chapter" data-level="5.5.4" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#use-model-to-make-predictions"><i class="fa fa-check"></i><b>5.5.4</b> Use model to make predictions</a></li>
 </ul></li>
-<li class="chapter" data-level="5.6" data-path="clustering.html"><a href="clustering.html#exercises"><i class="fa fa-check"></i><b>5.6</b> Exercises</a><ul>
+<li class="chapter" data-level="5.6" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#exercises-1"><i class="fa fa-check"></i><b>5.6</b> Exercises</a><ul>
 <li class="chapter" data-level="5.6.1" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#knnEx1"><i class="fa fa-check"></i><b>5.6.1</b> Exercise 1</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="svm.html"><a href="svm.html"><i class="fa fa-check"></i><b>6</b> Support vector machines</a><ul>
-<li class="chapter" data-level="6.1" data-path="clustering.html"><a href="clustering.html#introduction"><i class="fa fa-check"></i><b>6.1</b> Introduction</a><ul>
+<li class="chapter" data-level="6.1" data-path="svm.html"><a href="svm.html#introduction-2"><i class="fa fa-check"></i><b>6.1</b> Introduction</a><ul>
 <li class="chapter" data-level="6.1.1" data-path="svm.html"><a href="svm.html#maximum-margin-classifier"><i class="fa fa-check"></i><b>6.1.1</b> Maximum margin classifier</a></li>
 </ul></li>
 <li class="chapter" data-level="6.2" data-path="svm.html"><a href="svm.html#support-vector-classifier"><i class="fa fa-check"></i><b>6.2</b> Support vector classifier</a></li>
 <li class="chapter" data-level="6.3" data-path="svm.html"><a href="svm.html#support-vector-machine"><i class="fa fa-check"></i><b>6.3</b> Support Vector Machine</a></li>
 <li class="chapter" data-level="6.4" data-path="svm.html"><a href="svm.html#example---training-a-classifier"><i class="fa fa-check"></i><b>6.4</b> Example - training a classifier</a><ul>
 <li class="chapter" data-level="6.4.1" data-path="svm.html"><a href="svm.html#setup-environment"><i class="fa fa-check"></i><b>6.4.1</b> Setup environment</a></li>
-<li class="chapter" data-level="6.4.2" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#partition-data"><i class="fa fa-check"></i><b>6.4.2</b> Partition data</a></li>
+<li class="chapter" data-level="6.4.2" data-path="svm.html"><a href="svm.html#partition-data-1"><i class="fa fa-check"></i><b>6.4.2</b> Partition data</a></li>
 <li class="chapter" data-level="6.4.3" data-path="svm.html"><a href="svm.html#visualize-training-data"><i class="fa fa-check"></i><b>6.4.3</b> Visualize training data</a></li>
 <li class="chapter" data-level="6.4.4" data-path="svm.html"><a href="svm.html#define-a-custom-model"><i class="fa fa-check"></i><b>6.4.4</b> Define a custom model</a></li>
 <li class="chapter" data-level="6.4.5" data-path="svm.html"><a href="svm.html#model-cross-validation-and-tuning"><i class="fa fa-check"></i><b>6.4.5</b> Model cross-validation and tuning</a></li>
@@ -231,17 +371,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="6.5" data-path="svm.html"><a href="svm.html#example---regression"><i class="fa fa-check"></i><b>6.5</b> Example - regression</a></li>
 <li class="chapter" data-level="6.6" data-path="svm.html"><a href="svm.html#further-reading"><i class="fa fa-check"></i><b>6.6</b> Further reading</a></li>
-<li class="chapter" data-level="6.7" data-path="clustering.html"><a href="clustering.html#exercises"><i class="fa fa-check"></i><b>6.7</b> Exercises</a><ul>
+<li class="chapter" data-level="6.7" data-path="svm.html"><a href="svm.html#exercises-2"><i class="fa fa-check"></i><b>6.7</b> Exercises</a><ul>
 <li class="chapter" data-level="6.7.1" data-path="svm.html"><a href="svm.html#exercise-1"><i class="fa fa-check"></i><b>6.7.1</b> Exercise 1</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="7" data-path="decision-trees.html"><a href="decision-trees.html"><i class="fa fa-check"></i><b>7</b> Decision trees and random forests</a><ul>
 <li class="chapter" data-level="7.1" data-path="decision-trees.html"><a href="decision-trees.html#decision-trees-1"><i class="fa fa-check"></i><b>7.1</b> Decision Trees</a></li>
 <li class="chapter" data-level="7.2" data-path="decision-trees.html"><a href="decision-trees.html#random-forest"><i class="fa fa-check"></i><b>7.2</b> Random Forest</a></li>
-<li class="chapter" data-level="7.3" data-path="clustering.html"><a href="clustering.html#exercises"><i class="fa fa-check"></i><b>7.3</b> Exercises</a></li>
+<li class="chapter" data-level="7.3" data-path="decision-trees.html"><a href="decision-trees.html#exercises-3"><i class="fa fa-check"></i><b>7.3</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="8" data-path="use-case-1.html"><a href="use-case-1.html"><i class="fa fa-check"></i><b>8</b> Use case 1</a><ul>
-<li class="chapter" data-level="8.1" data-path="clustering.html"><a href="clustering.html#introduction"><i class="fa fa-check"></i><b>8.1</b> Introduction</a></li>
+<li class="chapter" data-level="8.1" data-path="use-case-1.html"><a href="use-case-1.html#introduction-3"><i class="fa fa-check"></i><b>8.1</b> Introduction</a></li>
 <li class="chapter" data-level="8.2" data-path="use-case-1.html"><a href="use-case-1.html#problem-automated-detection-of-malaria"><i class="fa fa-check"></i><b>8.2</b> Problem: automated detection of malaria</a></li>
 <li class="chapter" data-level="8.3" data-path="use-case-1.html"><a href="use-case-1.html#challenges"><i class="fa fa-check"></i><b>8.3</b> Challenges</a></li>
 <li class="chapter" data-level="8.4" data-path="use-case-1.html"><a href="use-case-1.html#getting-started"><i class="fa fa-check"></i><b>8.4</b> Getting started</a><ul>
@@ -264,9 +404,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10.2.1" data-path="logistic-regression.html"><a href="logistic-regression.html#logistic-regression"><i class="fa fa-check"></i><b>10.2.1</b> Logistic regression</a></li>
 </ul></li>
 <li class="chapter" data-level="10.3" data-path="logistic-regression.html"><a href="logistic-regression.html#resources"><i class="fa fa-check"></i><b>10.3</b> Resources</a></li>
+<li class="chapter" data-level="10.4" data-path="logistic-regression.html"><a href="logistic-regression.html#exercises-4"><i class="fa fa-check"></i><b>10.4</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="11" data-path="ann.html"><a href="ann.html"><i class="fa fa-check"></i><b>11</b> Artificial neural networks</a><ul>
 <li class="chapter" data-level="11.1" data-path="ann.html"><a href="ann.html#neural-networks"><i class="fa fa-check"></i><b>11.1</b> Neural Networks</a></li>
+<li class="chapter" data-level="11.2" data-path="ann.html"><a href="ann.html#exercises-5"><i class="fa fa-check"></i><b>11.2</b> Exercises</a></li>
 </ul></li>
 <li class="chapter" data-level="12" data-path="use-case-2.html"><a href="use-case-2.html"><i class="fa fa-check"></i><b>12</b> Use case 2</a></li>
 <li class="chapter" data-level="13" data-path="mlnn.html"><a href="mlnn.html"><i class="fa fa-check"></i><b>13</b> Deep Learning</a><ul>
@@ -277,10 +419,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="13.2" data-path="mlnn.html"><a href="mlnn.html#convolutional-neural-networks"><i class="fa fa-check"></i><b>13.2</b> Convolutional neural networks</a><ul>
 <li class="chapter" data-level="13.2.1" data-path="mlnn.html"><a href="mlnn.html#checking-the-models"><i class="fa fa-check"></i><b>13.2.1</b> Checking the models</a></li>
-<li class="chapter" data-level="13.2.2" data-path="mlnn.html"><a href="mlnn.html#asking-more-precise-questions"><i class="fa fa-check"></i><b>13.2.2</b> Asking more precise questions</a></li>
-<li class="chapter" data-level="13.2.3" data-path="mlnn.html"><a href="mlnn.html#more-complex-networks"><i class="fa fa-check"></i><b>13.2.3</b> More complex networks</a></li>
+<li class="chapter" data-level="13.2.2" data-path="mlnn.html"><a href="mlnn.html#data-augmentation"><i class="fa fa-check"></i><b>13.2.2</b> Data augmentation</a></li>
+<li class="chapter" data-level="13.2.3" data-path="mlnn.html"><a href="mlnn.html#asking-more-precise-questions"><i class="fa fa-check"></i><b>13.2.3</b> Asking more precise questions</a></li>
+<li class="chapter" data-level="13.2.4" data-path="mlnn.html"><a href="mlnn.html#more-complex-networks"><i class="fa fa-check"></i><b>13.2.4</b> More complex networks</a></li>
 </ul></li>
-<li class="chapter" data-level="13.3" data-path="svm.html"><a href="svm.html#further-reading"><i class="fa fa-check"></i><b>13.3</b> Further reading</a></li>
+<li class="chapter" data-level="13.3" data-path="mlnn.html"><a href="mlnn.html#further-reading-1"><i class="fa fa-check"></i><b>13.3</b> Further reading</a></li>
 </ul></li>
 <li class="appendix"><span><b>Appendix</b></span></li>
 <li class="chapter" data-level="A" data-path="logistic-regression.html"><a href="logistic-regression.html#resources"><i class="fa fa-check"></i><b>A</b> Resources</a><ul>
@@ -295,36 +438,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="B.2" data-path="solutions-dimensionality-reduction.html"><a href="solutions-dimensionality-reduction.html#exercise-2.6."><i class="fa fa-check"></i><b>B.2</b> Exercise 2.6.</a></li>
 </ul></li>
 <li class="chapter" data-level="C" data-path="solutions-clustering.html"><a href="solutions-clustering.html"><i class="fa fa-check"></i><b>C</b> Solutions ch. 4 - Clustering</a><ul>
-<li class="chapter" data-level="C.1" data-path="svm.html"><a href="svm.html#exercise-1"><i class="fa fa-check"></i><b>C.1</b> Exercise 1</a></li>
+<li class="chapter" data-level="C.1" data-path="solutions-clustering.html"><a href="solutions-clustering.html#exercise-1-1"><i class="fa fa-check"></i><b>C.1</b> Exercise 1</a></li>
 </ul></li>
 <li class="chapter" data-level="D" data-path="solutions-nearest-neighbours.html"><a href="solutions-nearest-neighbours.html"><i class="fa fa-check"></i><b>D</b> Solutions ch. 7 - Nearest neighbours</a><ul>
-<li class="chapter" data-level="D.1" data-path="svm.html"><a href="svm.html#exercise-1"><i class="fa fa-check"></i><b>D.1</b> Exercise 1</a></li>
+<li class="chapter" data-level="D.1" data-path="solutions-nearest-neighbours.html"><a href="solutions-nearest-neighbours.html#exercise-1-2"><i class="fa fa-check"></i><b>D.1</b> Exercise 1</a></li>
 </ul></li>
 <li class="chapter" data-level="E" data-path="solutions-svm.html"><a href="solutions-svm.html"><i class="fa fa-check"></i><b>E</b> Solutions ch. 6 - Support vector machines</a><ul>
-<li class="chapter" data-level="E.1" data-path="svm.html"><a href="svm.html#exercise-1"><i class="fa fa-check"></i><b>E.1</b> Exercise 1</a></li>
+<li class="chapter" data-level="E.1" data-path="solutions-svm.html"><a href="solutions-svm.html#exercise-1-3"><i class="fa fa-check"></i><b>E.1</b> Exercise 1</a></li>
 </ul></li>
 <li class="chapter" data-level="F" data-path="solutions-decision-trees.html"><a href="solutions-decision-trees.html"><i class="fa fa-check"></i><b>F</b> Solutions ch. 9 - Decision trees and random forests</a><ul>
-<li class="chapter" data-level="F.1" data-path="svm.html"><a href="svm.html#exercise-1"><i class="fa fa-check"></i><b>F.1</b> Exercise 1</a></li>
+<li class="chapter" data-level="F.1" data-path="solutions-decision-trees.html"><a href="solutions-decision-trees.html#exercise-1-4"><i class="fa fa-check"></i><b>F.1</b> Exercise 1</a></li>
 </ul></li>
 <li class="chapter" data-level="G" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html"><i class="fa fa-check"></i><b>G</b> Solutions chapter 8 - use case 1</a><ul>
 <li class="chapter" data-level="G.1" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#preparation"><i class="fa fa-check"></i><b>G.1</b> Preparation</a><ul>
 <li class="chapter" data-level="G.1.1" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#load-required-libraries"><i class="fa fa-check"></i><b>G.1.1</b> Load required libraries</a></li>
 <li class="chapter" data-level="G.1.2" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#define-svm-model"><i class="fa fa-check"></i><b>G.1.2</b> Define SVM model</a></li>
 <li class="chapter" data-level="G.1.3" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#setup-parallel-processing"><i class="fa fa-check"></i><b>G.1.3</b> Setup parallel processing</a></li>
-<li class="chapter" data-level="G.1.4" data-path="use-case-1.html"><a href="use-case-1.html#load-data"><i class="fa fa-check"></i><b>G.1.4</b> Load data</a></li>
+<li class="chapter" data-level="G.1.4" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#load-data-1"><i class="fa fa-check"></i><b>G.1.4</b> Load data</a></li>
 </ul></li>
 <li class="chapter" data-level="G.2" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#assess-data-quality"><i class="fa fa-check"></i><b>G.2</b> Assess data quality</a><ul>
-<li class="chapter" data-level="G.2.1" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#zero-and-near-zero-variance-predictors"><i class="fa fa-check"></i><b>G.2.1</b> Zero and near-zero variance predictors</a></li>
+<li class="chapter" data-level="G.2.1" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#zero-and-near-zero-variance-predictors-1"><i class="fa fa-check"></i><b>G.2.1</b> Zero and near-zero variance predictors</a></li>
 <li class="chapter" data-level="G.2.2" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#are-all-predictors-on-the-same-scale"><i class="fa fa-check"></i><b>G.2.2</b> Are all predictors on the same scale?</a></li>
 <li class="chapter" data-level="G.2.3" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#redundancy-from-correlated-variables"><i class="fa fa-check"></i><b>G.2.3</b> Redundancy from correlated variables</a></li>
-<li class="chapter" data-level="G.2.4" data-path="nearest-neighbours.html"><a href="nearest-neighbours.html#skewness"><i class="fa fa-check"></i><b>G.2.4</b> Skewness</a></li>
+<li class="chapter" data-level="G.2.4" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#skewness-1"><i class="fa fa-check"></i><b>G.2.4</b> Skewness</a></li>
 </ul></li>
 <li class="chapter" data-level="G.3" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#infection-status-two-class-problem"><i class="fa fa-check"></i><b>G.3</b> Infection status (two-class problem)</a><ul>
 <li class="chapter" data-level="G.3.1" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#model-training-and-parameter-tuning"><i class="fa fa-check"></i><b>G.3.1</b> Model training and parameter tuning</a></li>
 <li class="chapter" data-level="G.3.2" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#knn"><i class="fa fa-check"></i><b>G.3.2</b> KNN</a></li>
-<li class="chapter" data-level="G.3.3" data-path="svm.html"><a href="svm.html#svm"><i class="fa fa-check"></i><b>G.3.3</b> SVM</a></li>
+<li class="chapter" data-level="G.3.3" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#svm-1"><i class="fa fa-check"></i><b>G.3.3</b> SVM</a></li>
 <li class="chapter" data-level="G.3.4" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#decision-tree"><i class="fa fa-check"></i><b>G.3.4</b> Decision tree</a></li>
-<li class="chapter" data-level="G.3.5" data-path="decision-trees.html"><a href="decision-trees.html#random-forest"><i class="fa fa-check"></i><b>G.3.5</b> Random forest</a></li>
+<li class="chapter" data-level="G.3.5" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#random-forest-1"><i class="fa fa-check"></i><b>G.3.5</b> Random forest</a></li>
 <li class="chapter" data-level="G.3.6" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#compare-models"><i class="fa fa-check"></i><b>G.3.6</b> Compare models</a></li>
 <li class="chapter" data-level="G.3.7" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#predict-test-set-using-our-best-model"><i class="fa fa-check"></i><b>G.3.7</b> Predict test set using our best model</a></li>
 <li class="chapter" data-level="G.3.8" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#roc-curve"><i class="fa fa-check"></i><b>G.3.8</b> ROC curve</a></li>
@@ -332,9 +475,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="G.4" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#discrimination-of-infective-stages-multi-class-problem"><i class="fa fa-check"></i><b>G.4</b> Discrimination of infective stages (multi-class problem)</a><ul>
 <li class="chapter" data-level="G.4.1" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#define-cross-validation-procedure"><i class="fa fa-check"></i><b>G.4.1</b> Define cross-validation procedure</a></li>
 <li class="chapter" data-level="G.4.2" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#knn-1"><i class="fa fa-check"></i><b>G.4.2</b> KNN</a></li>
-<li class="chapter" data-level="G.4.3" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#svm-1"><i class="fa fa-check"></i><b>G.4.3</b> SVM</a></li>
+<li class="chapter" data-level="G.4.3" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#svm-2"><i class="fa fa-check"></i><b>G.4.3</b> SVM</a></li>
 <li class="chapter" data-level="G.4.4" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#decision-tree-1"><i class="fa fa-check"></i><b>G.4.4</b> Decision tree</a></li>
-<li class="chapter" data-level="G.4.5" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#random-forest-1"><i class="fa fa-check"></i><b>G.4.5</b> Random forest</a></li>
+<li class="chapter" data-level="G.4.5" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#random-forest-2"><i class="fa fa-check"></i><b>G.4.5</b> Random forest</a></li>
 <li class="chapter" data-level="G.4.6" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#compare-models-1"><i class="fa fa-check"></i><b>G.4.6</b> Compare models</a></li>
 <li class="chapter" data-level="G.4.7" data-path="use-case-1-solutions.html"><a href="use-case-1-solutions.html#predict-test-set-using-our-best-model-1"><i class="fa fa-check"></i><b>G.4.7</b> Predict test set using our best model</a></li>
 </ul></li>
@@ -345,7 +488,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="I" data-path="solutions-logistic-regression.html"><a href="solutions-logistic-regression.html"><i class="fa fa-check"></i><b>I</b> Solutions ch. 4 - Linear and non-linear (logistic) regression</a></li>
 <li class="chapter" data-level="J" data-path="solutions-ann.html"><a href="solutions-ann.html"><i class="fa fa-check"></i><b>J</b> Solutions ch. 10 - Artificial neural networks</a><ul>
-<li class="chapter" data-level="J.1" data-path="svm.html"><a href="svm.html#exercise-1"><i class="fa fa-check"></i><b>J.1</b> Exercise 1</a></li>
+<li class="chapter" data-level="J.1" data-path="solutions-ann.html"><a href="solutions-ann.html#exercise-1-5"><i class="fa fa-check"></i><b>J.1</b> Exercise 1</a></li>
 </ul></li>
 <li class="chapter" data-level="K" data-path="use-case-2-solutions.html"><a href="use-case-2-solutions.html"><i class="fa fa-check"></i><b>K</b> Solutions for use case 2</a></li>
 </ul>
@@ -370,47 +513,63 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>Solutions to exercises of chapter <a href="dimensionality-reduction.html#dimensionality-reduction">3</a>.</p>
 <div id="exercise-2.5." class="section level2">
 <h2><span class="header-section-number">B.1</span> Exercise 2.5.</h2>
+<p>Read in the corresponding spreadsheet into the R environment as a data frame variable.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="solutions-dimensionality-reduction.html#cb1-1"></a><span class="kw">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="solutions-dimensionality-reduction.html#cb1-2"></a><span class="kw">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb1-3"><a href="solutions-dimensionality-reduction.html#cb1-3"></a></span>
+<span id="cb1-4"><a href="solutions-dimensionality-reduction.html#cb1-4"></a>sc_rna &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/PGC_transcriptomics/PGC_transcriptomics.csv&quot;</span>)</span>
+<span id="cb1-5"><a href="solutions-dimensionality-reduction.html#cb1-5"></a></span>
+<span id="cb1-6"><a href="solutions-dimensionality-reduction.html#cb1-6"></a>metadata &lt;-<span class="st"> </span>sc_rna <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-7"><a href="solutions-dimensionality-reduction.html#cb1-7"></a><span class="st">  </span><span class="kw">slice</span>( <span class="dv">1</span><span class="op">:</span><span class="dv">4</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-8"><a href="solutions-dimensionality-reduction.html#cb1-8"></a><span class="st">  </span><span class="kw">pivot_longer</span>( <span class="dt">cols=</span><span class="op">-</span>Sample, <span class="dt">names_to =</span> <span class="st">&#39;cell_type&#39;</span>, <span class="dt">values_to  =</span> <span class="st">&#39;index&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-9"><a href="solutions-dimensionality-reduction.html#cb1-9"></a><span class="st">  </span><span class="kw">pivot_wider</span>( <span class="dt">names_from =</span> Sample, <span class="dt">values_from =</span> index) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-10"><a href="solutions-dimensionality-reduction.html#cb1-10"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">group=</span><span class="kw">str_remove</span>(cell_type, <span class="st">&#39;_.*$&#39;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-11"><a href="solutions-dimensionality-reduction.html#cb1-11"></a><span class="st">  </span><span class="kw">mutate_if</span>( is.numeric, as.factor)  </span>
+<span id="cb1-12"><a href="solutions-dimensionality-reduction.html#cb1-12"></a>  </span>
+<span id="cb1-13"><a href="solutions-dimensionality-reduction.html#cb1-13"></a>sc_rna_fil &lt;-<span class="st"> </span>sc_rna <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-14"><a href="solutions-dimensionality-reduction.html#cb1-14"></a><span class="st">  </span><span class="kw">slice</span>(<span class="op">-</span><span class="kw">c</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-15"><a href="solutions-dimensionality-reduction.html#cb1-15"></a><span class="st">  </span><span class="kw">column_to_rownames</span>(<span class="dt">var=</span><span class="st">&#39;Sample&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb1-16"><a href="solutions-dimensionality-reduction.html#cb1-16"></a><span class="st">  </span><span class="kw">as.matrix</span>()</span>
+<span id="cb1-17"><a href="solutions-dimensionality-reduction.html#cb1-17"></a></span>
+<span id="cb1-18"><a href="solutions-dimensionality-reduction.html#cb1-18"></a>genenames &lt;-<span class="st"> </span><span class="kw">rownames</span>(sc_rna_fil)</span>
+<span id="cb1-19"><a href="solutions-dimensionality-reduction.html#cb1-19"></a>cell_type &lt;-<span class="st"> </span><span class="kw">colnames</span>(sc_rna_fil) </span></code></pre></div>
 <p>We can run tSNE using the following command:</p>
-<div class="sourceCode" id="cb658"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb658-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">12345</span>)</a>
-<a class="sourceLine" id="cb658-2" data-line-number="2">D &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="dt">file =</span> <span class="st">&quot;data/PGC_transcriptomics/PGC_transcriptomics.csv&quot;</span>, <span class="dt">header =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="dt">row.names=</span><span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb658-3" data-line-number="3">genenames &lt;-<span class="st"> </span><span class="kw">rownames</span>(D)</a>
-<a class="sourceLine" id="cb658-4" data-line-number="4">genenames &lt;-<span class="st"> </span>genenames[<span class="dv">4</span><span class="op">:</span><span class="kw">nrow</span>(D)]</a></code></pre></div>
-<p>This reads in the corresponding spreadsheet into the R environment as a data frame variable.</p>
-<div class="sourceCode" id="cb659"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb659-1" data-line-number="1"><span class="kw">library</span>(Rtsne)</a>
-<a class="sourceLine" id="cb659-2" data-line-number="2"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb659-3" data-line-number="3">tsne_model_<span class="dv">1</span> =<span class="st"> </span><span class="kw">Rtsne</span>(<span class="kw">as.matrix</span>(<span class="kw">t</span>(D)), <span class="dt">check_duplicates=</span><span class="ot">FALSE</span>, <span class="dt">pca=</span><span class="ot">TRUE</span>, <span class="dt">perplexity=</span><span class="dv">100</span>, <span class="dt">theta=</span><span class="fl">0.5</span>, <span class="dt">dims=</span><span class="dv">2</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="solutions-dimensionality-reduction.html#cb2-1"></a><span class="kw">library</span>(Rtsne)</span>
+<span id="cb2-2"><a href="solutions-dimensionality-reduction.html#cb2-2"></a><span class="kw">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb2-3"><a href="solutions-dimensionality-reduction.html#cb2-3"></a>tsne_model_<span class="dv">1</span> =<span class="st"> </span><span class="kw">Rtsne</span>(<span class="kw">as.matrix</span>(<span class="kw">t</span>(sc_rna_fil)), <span class="dt">check_duplicates=</span><span class="ot">FALSE</span>, <span class="dt">pca=</span><span class="ot">TRUE</span>, <span class="dt">perplexity=</span><span class="dv">100</span>, <span class="dt">theta=</span><span class="fl">0.5</span>, <span class="dt">dims=</span><span class="dv">2</span>)</span></code></pre></div>
 <p>As we did previously, we can plot the results using:</p>
-<div class="sourceCode" id="cb660"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb660-1" data-line-number="1">y1 &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==-</span><span class="dv">1</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb660-2" data-line-number="2">y2 &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb660-3" data-line-number="3">y3 &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">1</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb660-4" data-line-number="4">y4 &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">2</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb660-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb660-6" data-line-number="6"><span class="kw">plot</span>(y1,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;red&quot;</span>,<span class="dt">xlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">20</span>, <span class="dv">20</span>),<span class="dt">ylim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">20</span>, <span class="dv">20</span>))</a>
-<a class="sourceLine" id="cb660-7" data-line-number="7"><span class="kw">points</span>(y2,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;black&quot;</span>)</a>
-<a class="sourceLine" id="cb660-8" data-line-number="8"><span class="kw">points</span>(y3,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;blue&quot;</span>)</a>
-<a class="sourceLine" id="cb660-9" data-line-number="9"><span class="kw">points</span>(y4,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;green&quot;</span>)</a>
-<a class="sourceLine" id="cb660-10" data-line-number="10"><span class="kw">legend</span>(<span class="op">-</span><span class="dv">20</span>, <span class="dv">10</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;ESC&quot;</span>, <span class="st">&quot;preimp&quot;</span>, <span class="st">&quot;PGC&quot;</span>, <span class="st">&quot;soma&quot;</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;black&quot;</span>, <span class="st">&quot;blue&quot;</span>, <span class="st">&quot;green&quot;</span>),<span class="dt">pch=</span><span class="st">&quot;o&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>, <span class="dt">cex=</span><span class="fl">0.8</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="solutions-dimensionality-reduction.html#cb3-1"></a>sc_2d_data &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-2"><a href="solutions-dimensionality-reduction.html#cb3-2"></a><span class="st">  </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-3"><a href="solutions-dimensionality-reduction.html#cb3-3"></a><span class="st">  </span><span class="kw">rename</span>( <span class="dt">x=</span>V1,<span class="dt">y=</span>V2) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-4"><a href="solutions-dimensionality-reduction.html#cb3-4"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">cell_type =</span> cell_type ) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb3-5"><a href="solutions-dimensionality-reduction.html#cb3-5"></a><span class="st">  </span><span class="kw">mutate</span>( <span class="dt">cell_group =</span> <span class="kw">str_remove</span>(cell_type, <span class="st">&#39;_.*$&#39;</span>))</span>
+<span id="cb3-6"><a href="solutions-dimensionality-reduction.html#cb3-6"></a></span>
+<span id="cb3-7"><a href="solutions-dimensionality-reduction.html#cb3-7"></a><span class="kw">ggplot</span>(<span class="dt">data=</span>sc_2d_data) <span class="op">+</span></span>
+<span id="cb3-8"><a href="solutions-dimensionality-reduction.html#cb3-8"></a><span class="st">  </span><span class="kw">geom_point</span>( <span class="dt">mapping=</span><span class="kw">aes</span>(<span class="dt">x=</span>x,<span class="dt">y=</span>y, <span class="dt">color=</span>cell_group), <span class="dt">alpha=</span><span class="fl">0.5</span>) <span class="op">+</span></span>
+<span id="cb3-9"><a href="solutions-dimensionality-reduction.html#cb3-9"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">20</span>)) <span class="op">+</span></span>
+<span id="cb3-10"><a href="solutions-dimensionality-reduction.html#cb3-10"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">20</span>,<span class="dv">20</span>)) <span class="op">+</span></span>
+<span id="cb3-11"><a href="solutions-dimensionality-reduction.html#cb3-11"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span></code></pre></div>
 <p><img src="15-solutions-dimensionality-reduction_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 <div id="exercise-2.6." class="section level2">
 <h2><span class="header-section-number">B.2</span> Exercise 2.6.</h2>
 <p>We can plot the expression patterns for pre-implantation embryos:</p>
-<div class="sourceCode" id="cb661"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb661-1" data-line-number="1">y2_<span class="dv">0</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">0</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-2" data-line-number="2">y2_<span class="dv">1</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">1</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-3" data-line-number="3">y2_<span class="dv">2</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">2</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-4" data-line-number="4">y2_<span class="dv">3</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">3</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-5" data-line-number="5">y2_<span class="dv">4</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">4</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-6" data-line-number="6">y2_<span class="dv">5</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">5</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-7" data-line-number="7">y2_<span class="dv">6</span> &lt;-<span class="st"> </span>tsne_model_<span class="dv">1</span><span class="op">$</span>Y[<span class="kw">which</span>(D[<span class="dv">1</span>,]<span class="op">==</span><span class="dv">0</span> <span class="op">&amp;</span><span class="st"> </span>D[<span class="dv">3</span>,]<span class="op">==</span><span class="dv">6</span>),<span class="dv">1</span><span class="op">:</span><span class="dv">2</span>]</a>
-<a class="sourceLine" id="cb661-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb661-9" data-line-number="9"><span class="kw">plot</span>(y2_<span class="dv">0</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato&quot;</span>,<span class="dt">xlim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>),<span class="dt">ylim=</span><span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>))</a>
-<a class="sourceLine" id="cb661-10" data-line-number="10"><span class="kw">points</span>(y2_<span class="dv">1</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato&quot;</span>)</a>
-<a class="sourceLine" id="cb661-11" data-line-number="11"><span class="kw">points</span>(y2_<span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato1&quot;</span>)</a>
-<a class="sourceLine" id="cb661-12" data-line-number="12"><span class="kw">points</span>(y2_<span class="dv">3</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato1&quot;</span>)</a>
-<a class="sourceLine" id="cb661-13" data-line-number="13"><span class="kw">points</span>(y2_<span class="dv">4</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato2&quot;</span>)</a>
-<a class="sourceLine" id="cb661-14" data-line-number="14"><span class="kw">points</span>(y2_<span class="dv">5</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato3&quot;</span>)</a>
-<a class="sourceLine" id="cb661-15" data-line-number="15"><span class="kw">points</span>(y2_<span class="dv">6</span>,<span class="dt">type=</span><span class="st">&quot;p&quot;</span>,<span class="dt">col=</span><span class="st">&quot;tomato4&quot;</span>)</a>
-<a class="sourceLine" id="cb661-16" data-line-number="16"><span class="kw">legend</span>(<span class="op">-</span><span class="dv">10</span>, <span class="dv">10</span>, <span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;Ooc&quot;</span>, <span class="st">&quot;Zyg&quot;</span>, <span class="st">&quot;2C&quot;</span>, <span class="st">&quot;4C&quot;</span>,<span class="st">&quot;8C&quot;</span>,<span class="st">&quot;Mor&quot;</span>,<span class="st">&quot;Blast&quot;</span>), <span class="dt">col=</span><span class="kw">c</span>(<span class="st">&quot;tomato&quot;</span>, <span class="st">&quot;tomato&quot;</span>, <span class="st">&quot;tomato1&quot;</span>, <span class="st">&quot;tomato1&quot;</span>, <span class="st">&quot;tomato2&quot;</span>,<span class="st">&quot;tomato3&quot;</span>,<span class="st">&quot;tomato4&quot;</span>),<span class="dt">pch=</span><span class="st">&quot;o&quot;</span>, <span class="dt">bty=</span><span class="st">&quot;n&quot;</span>, <span class="dt">cex=</span><span class="fl">0.8</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="solutions-dimensionality-reduction.html#cb4-1"></a>sc_2d_preimp &lt;-<span class="st"> </span><span class="kw">inner_join</span>(sc_2d_data, metadata, <span class="dt">by=</span><span class="st">&#39;cell_type&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-2"><a href="solutions-dimensionality-reduction.html#cb4-2"></a><span class="st">  </span><span class="kw">filter</span>(cell_group  <span class="op">==</span><span class="st"> &#39;preimp&#39;</span>) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb4-3"><a href="solutions-dimensionality-reduction.html#cb4-3"></a><span class="st">  </span><span class="kw">mutate</span>( <span class="dt">preimp_type =</span> <span class="kw">recode</span>(<span class="kw">as.character</span>(Time), </span>
+<span id="cb4-4"><a href="solutions-dimensionality-reduction.html#cb4-4"></a>                       <span class="st">&#39;0&#39;</span> =<span class="st"> &#39;Ooc&#39;</span>,</span>
+<span id="cb4-5"><a href="solutions-dimensionality-reduction.html#cb4-5"></a>                       <span class="st">&#39;1&#39;</span> =<span class="st"> &#39;Zyg&#39;</span>,</span>
+<span id="cb4-6"><a href="solutions-dimensionality-reduction.html#cb4-6"></a>                       <span class="st">&#39;2&#39;</span> =<span class="st"> &#39;2C&#39;</span>,</span>
+<span id="cb4-7"><a href="solutions-dimensionality-reduction.html#cb4-7"></a>                       <span class="st">&#39;3&#39;</span> =<span class="st"> &#39;4C&#39;</span>,</span>
+<span id="cb4-8"><a href="solutions-dimensionality-reduction.html#cb4-8"></a>                       <span class="st">&#39;4&#39;</span>  =<span class="st"> &#39;8C&#39;</span>,</span>
+<span id="cb4-9"><a href="solutions-dimensionality-reduction.html#cb4-9"></a>                       <span class="st">&#39;5&#39;</span> =<span class="st"> &#39;Mor&#39;</span>,</span>
+<span id="cb4-10"><a href="solutions-dimensionality-reduction.html#cb4-10"></a>                       <span class="st">&#39;6&#39;</span> =<span class="st"> &#39;Blast&#39;</span>))</span>
+<span id="cb4-11"><a href="solutions-dimensionality-reduction.html#cb4-11"></a></span>
+<span id="cb4-12"><a href="solutions-dimensionality-reduction.html#cb4-12"></a><span class="kw">ggplot</span>(<span class="dt">data=</span>sc_2d_preimp) <span class="op">+</span></span>
+<span id="cb4-13"><a href="solutions-dimensionality-reduction.html#cb4-13"></a><span class="st">  </span><span class="kw">geom_point</span>( <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x=</span>x,  <span class="dt">y=</span>y, <span class="dt">color=</span>preimp_type), <span class="dt">alpha=</span><span class="fl">0.3</span>) <span class="op">+</span></span>
+<span id="cb4-14"><a href="solutions-dimensionality-reduction.html#cb4-14"></a><span class="st">  </span><span class="kw">scale_x_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">10</span>)) <span class="op">+</span></span>
+<span id="cb4-15"><a href="solutions-dimensionality-reduction.html#cb4-15"></a><span class="st">  </span><span class="kw">scale_y_continuous</span>(<span class="dt">limits =</span> <span class="kw">c</span>(<span class="op">-</span><span class="dv">10</span>,<span class="dv">10</span>)) <span class="op">+</span></span>
+<span id="cb4-16"><a href="solutions-dimensionality-reduction.html#cb4-16"></a><span class="st">  </span><span class="kw">theme_classic</span>()</span></code></pre></div>
 <p><img src="15-solutions-dimensionality-reduction_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 
 </div>
@@ -444,6 +603,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -471,20 +631,6 @@ gitbook.start({
 });
 </script>
 
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-  (function () {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    var src = "true";
-    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:")
-      if (/^https?:/.test(src))
-        src = src.replace(/^https?:/, '');
-    script.src = src;
-    document.getElementsByTagName("head")[0].appendChild(script);
-  })();
-</script>
 </body>
 
 </html>
